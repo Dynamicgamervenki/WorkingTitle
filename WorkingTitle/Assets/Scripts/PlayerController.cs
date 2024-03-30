@@ -10,6 +10,7 @@ public class PlayerController : MonoBehaviour
     private Vector2 currentMovement;
     private bool movment_Pressed;
     private bool run_Pressed;
+    [SerializeField] private float rotationSpeed = 5.0f;
 
     int isWalkingHash;
     int isRunningHash;
@@ -84,10 +85,16 @@ public class PlayerController : MonoBehaviour
     private void Rotation()
     {
         Vector3 currentPosition = transform.position;
-        Vector3 newPosition = new Vector3(currentMovement.x,0,currentMovement.y);
+        Vector3 newPosition = new Vector3(currentMovement.x, 0, currentMovement.y);
         Vector3 positionToLookAt = currentPosition + newPosition;
-        transform.LookAt(positionToLookAt);
+
+        Vector3 direction = positionToLookAt - transform.position;
+
+        Quaternion targetRotation = Quaternion.LookRotation(direction);
+
+        transform.rotation = Quaternion.Lerp(transform.rotation, targetRotation, Time.deltaTime * rotationSpeed);
     }
+
 
     private void OnEnable()
     {
