@@ -1,19 +1,27 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.InputSystem;
+using UnityEngine.InputSystem.XR;
 
 public class PlayerController : MonoBehaviour
 {
     private Animator anim;
-    private PlayerInput input;
+    public PlayerInput input;
     private Vector2 currentMovement;
     private bool movment_Pressed;
     private bool run_Pressed;
+    public bool rope_Climb;
+    public bool rope_ClimbInProgress;
     [SerializeField] private float rotationSpeed = 5.0f;
 
     int isWalkingHash;
     int isRunningHash;
+
+    //Actions 
+    public UnityAction playerActions;
 
     private void Awake()
     {
@@ -40,6 +48,22 @@ public class PlayerController : MonoBehaviour
         {
             run_Pressed = false;
         };
+        input.Player.Interact.performed += ctx => 
+        { 
+            rope_Climb = !rope_Climb;
+            if(rope_Climb)
+            {
+                playerActions -= Movement;
+                playerActions -= Rotation;
+                playerActions += RopeClimb;
+            }
+            if(!rope_Climb)
+            {
+                playerActions += Movement;
+                playerActions += Rotation;
+                playerActions -= RopeClimb;
+            }
+        };
     }
 
     private void Start()
@@ -50,8 +74,9 @@ public class PlayerController : MonoBehaviour
     }
     private void Update()
     {
-        Movement();
-        Rotation();
+        //Movement();
+        //Rotation();
+        playerActions?.Invoke();
     }
 
     private void Movement()
@@ -95,14 +120,21 @@ public class PlayerController : MonoBehaviour
         transform.rotation = Quaternion.Lerp(transform.rotation, targetRotation, Time.deltaTime * rotationSpeed);
     }
 
-
+    public void RopeClimb()
+    {
+        anim.SetBool("RopeClimb", rope_Climb);
+    }
     private void OnEnable()
     {
         input.Player.Enable();
+        playerActions += Movement;
+        playerActions += Rotation;
     }
 
     private void OnDisable()
     {
-        input.Player.Disable(); 
+        input.Player.Disable();
+        playerActions -= Movement;
+        playerActions -= Rotation;
     }
 }
