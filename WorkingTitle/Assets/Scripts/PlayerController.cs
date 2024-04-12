@@ -51,6 +51,7 @@ public class PlayerController : MonoBehaviour
         input.Player.Interact.performed += ctx => 
         { 
             rope_Climb = !rope_Climb;
+            anim.SetBool("CanRopeClimb", rope_Climb);
             if(rope_Climb)
             {
                 playerActions -= Movement;
@@ -122,7 +123,7 @@ public class PlayerController : MonoBehaviour
 
     public void RopeClimb()
     {
-        anim.SetBool("RopeClimb", rope_Climb);
+        anim.SetInteger("RopeClimb", (int)(input.Player.Move.ReadValue<Vector2>().y));
     }
     private void OnEnable()
     {
