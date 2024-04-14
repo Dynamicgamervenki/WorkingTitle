@@ -1,5 +1,7 @@
 ﻿ using UnityEngine;
-#if ENABLE_INPUT_SYSTEM 
+using UnityEngine.Events;
+
+#if ENABLE_INPUT_SYSTEM
 using UnityEngine.InputSystem;
 #endif
 
@@ -97,6 +99,12 @@ namespace StarterAssets
         private int _animIDJump;
         private int _animIDFreeFall;
         private int _animIDMotionSpeed;
+        private int _animIDRopeClimb;
+        private int _animIDRopeClimbValue;
+
+        // rope climb
+        public bool _ropeClimb;
+        public PlayerRopeClimb _playerRopeClimb;
 
 #if ENABLE_INPUT_SYSTEM 
         private PlayerInput _playerInput;
@@ -109,6 +117,8 @@ namespace StarterAssets
         private const float _threshold = 0.01f;
 
         private bool _hasAnimator;
+
+        public UnityAction _playerActions;
 
         private bool IsCurrentDeviceMouse
         {
@@ -150,15 +160,21 @@ namespace StarterAssets
             // reset our timeouts on start
             _jumpTimeoutDelta = JumpTimeout;
             _fallTimeoutDelta = FallTimeout;
+            _playerActions += JumpAndGravity;
+            _playerActions += GroundedCheck;
+            _playerActions += Move;
         }
 
         private void Update()
         {
             _hasAnimator = TryGetComponent(out _animator);
+            _playerActions?.Invoke();
+            //if(Input.GetKeyDown(KeyCode.E)) { PerformRopeClimb(); }
+           
+            //JumpAndGravity();
+            //GroundedCheck();
+            //Move();
 
-            JumpAndGravity();
-            GroundedCheck();
-            Move();
         }
 
         private void LateUpdate()
@@ -173,6 +189,8 @@ namespace StarterAssets
             _animIDJump = Animator.StringToHash("Jump");
             _animIDFreeFall = Animator.StringToHash("FreeFall");
             _animIDMotionSpeed = Animator.StringToHash("MotionSpeed");
+            _animIDRopeClimb = Animator.StringToHash("RopeClimb");
+            _animIDRopeClimbValue = Animator.StringToHash("RopeClimbValue");
         }
 
         private void GroundedCheck()
@@ -387,6 +405,34 @@ namespace StarterAssets
             {
                 AudioSource.PlayClipAtPoint(LandingAudioClip, transform.TransformPoint(_controller.center), FootstepAudioVolume);
             }
+        }
+        public void PerformRopeClimb(InputAction.CallbackContext callback)
+        {
+            _playerRopeClimb.canRopeClimb = !_playerRopeClimb.canRopeClimb;
+
+            if (_playerRopeClimb.canRopeClimb)
+            {
+                _playerActions -= JumpAndGravity;
+                _playerActions -= GroundedCheck;
+                _playerActions -= Move;
+                _playerActions += RopeClimb;
+                _animator.applyRootMotion = true;
+                
+            }
+            else
+            {
+                _playerActions += JumpAndGravity;
+                _playerActions += GroundedCheck;
+                _playerActions += Move;
+                _playerActions -= RopeClimb;
+                _animator.applyRootMotion = false;
+                _animator.SetBool(_animIDRopeClimb, false);
+            }
+        }
+        private void RopeClimb()
+        {
+                _animator.SetBool(_animIDRopeClimb, _playerRopeClimb.canRopeClimb);
+                _animator.SetInteger(_animIDRopeClimbValue, (int)_input.move.y);
         }
     }
 }

@@ -4,19 +4,21 @@ using UnityEngine;
 
 public class PlayerRopeClimb : MonoBehaviour
 {
-    public PlayerController controller;
+    //public PlayerController controller;
+    public bool canRopeClimb;
     private void OnTriggerEnter(Collider other)
     {
+        Debug.Log(other.tag);
         if(other.gameObject.CompareTag("Rope"))
         {
-            controller.rope_Climb = true;
+            canRopeClimb = true;
         }
     }
     private void OnTriggerExit(Collider other)
     {
         if (other.gameObject.CompareTag("Rope"))
         {
-            controller.rope_Climb = false;
+            canRopeClimb = false;
         }
     }
    
