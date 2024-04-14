@@ -408,16 +408,16 @@ namespace StarterAssets
         }
         public void PerformRopeClimb(InputAction.CallbackContext callback)
         {
-            _playerRopeClimb.canRopeClimb = !_playerRopeClimb.canRopeClimb;
-
-            if (_playerRopeClimb.canRopeClimb)
+            _ropeClimb=!_ropeClimb;
+            if (_playerRopeClimb._ropeClimbDetect && _ropeClimb)
             {
                 _playerActions -= JumpAndGravity;
                 _playerActions -= GroundedCheck;
                 _playerActions -= Move;
                 _playerActions += RopeClimb;
                 _animator.applyRootMotion = true;
-                
+                _animator.SetBool(_animIDRopeClimb, true);
+
             }
             else
             {
@@ -431,8 +431,8 @@ namespace StarterAssets
         }
         private void RopeClimb()
         {
-                _animator.SetBool(_animIDRopeClimb, _playerRopeClimb.canRopeClimb);
-                _animator.SetInteger(_animIDRopeClimbValue, (int)_input.move.y);
+               
+           _animator.SetInteger(_animIDRopeClimbValue, (int)_input.move.y);
         }
     }
 }
