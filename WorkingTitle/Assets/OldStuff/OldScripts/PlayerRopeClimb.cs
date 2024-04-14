@@ -6,12 +6,14 @@ public class PlayerRopeClimb : MonoBehaviour
 {
     //public PlayerController controller;
     public bool _ropeClimbDetect;
+    public Transform _transform;
     private void OnTriggerEnter(Collider other)
     {
         Debug.Log(other.tag);
         if(other.gameObject.CompareTag("Rope"))
         {
             _ropeClimbDetect = true;
+            _transform = other.transform;
         }
     }
     private void OnTriggerExit(Collider other)
@@ -19,6 +21,7 @@ public class PlayerRopeClimb : MonoBehaviour
         if (other.gameObject.CompareTag("Rope"))
         {
             _ropeClimbDetect = false;
+            _transform = null;
         }
     }
    
