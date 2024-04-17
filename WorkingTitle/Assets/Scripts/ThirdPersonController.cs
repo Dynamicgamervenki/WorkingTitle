@@ -38,6 +38,7 @@ namespace StarterAssets
         [Space(10)]
         [Tooltip("The height the player can jump")]
         public float JumpHeight = 1.2f;
+        public float DoubleJumpHeight = 1.2f;
 
         [Tooltip("The character uses its own gravity value. The engine default is -9.81f")]
         public float Gravity = -15.0f;
@@ -98,6 +99,7 @@ namespace StarterAssets
         private int _animIDSpeed;
         private int _animIDGrounded;
         private int _animIDJump;
+        //private int _animIDJumpDouble;
         private int _animIDFreeFall;
         private int _animIDMotionSpeed;
         private int _animIDRopeClimb;
@@ -188,6 +190,7 @@ namespace StarterAssets
             _animIDSpeed = Animator.StringToHash("Speed");
             _animIDGrounded = Animator.StringToHash("Grounded");
             _animIDJump = Animator.StringToHash("Jump");
+            //_animIDJumpDouble = Animator.StringToHash("DoubleJump");
             _animIDFreeFall = Animator.StringToHash("FreeFall");
             _animIDMotionSpeed = Animator.StringToHash("MotionSpeed");
             _animIDRopeClimb = Animator.StringToHash("RopeClimb");
@@ -230,6 +233,7 @@ namespace StarterAssets
                 _cinemachineTargetYaw, 0.0f);
         }
 
+        
         private void Move()
         {
             if (!_ropeClimb)
@@ -300,7 +304,7 @@ namespace StarterAssets
                 }
             }
         }
-
+        public int jumpCount;
         private void JumpAndGravity()
         {
             
@@ -313,6 +317,7 @@ namespace StarterAssets
                 if (_hasAnimator)
                 {
                     _animator.SetBool(_animIDJump, false);
+                    //_animator.SetBool(_animIDJumpDouble, false);
                     _animator.SetBool(_animIDFreeFall, false);
                 }
 
@@ -323,11 +328,12 @@ namespace StarterAssets
                 }
 
                 // Jump
-                if (_input.jump && _jumpTimeoutDelta <= 0.0f)
+                if (_input.inputActions.Player.Jump.WasPressedThisFrame() && _jumpTimeoutDelta <= 0.0f)
                 {
                     // the square root of H * -2 * G = how much velocity needed to reach desired height
                     _verticalVelocity = Mathf.Sqrt(JumpHeight * -2f * Gravity);
-
+                    Debug.LogError("Jump performed");
+                    jumpCount++;
                     // update animator if using character
                     if (_hasAnimator)
                     {
@@ -345,7 +351,17 @@ namespace StarterAssets
             {
                 // reset the jump timeout timer
                 _jumpTimeoutDelta = JumpTimeout;
-
+                if (_input.inputActions.Player.Jump.WasPressedThisFrame() && jumpCount>0)
+                {
+                    // the square root of H * -2 * G = how much velocity needed to reach desired height
+                    _verticalVelocity = Mathf.Sqrt(DoubleJumpHeight * -2f * Gravity);
+                    jumpCount=0;
+                    // update animator if using character
+                    if (_hasAnimator)
+                    {
+                        _animator.SetBool(_animIDJump, true);
+                    }
+                }
                 // fall timeout
                 if (_fallTimeoutDelta >= 0.0f)
                 {
@@ -434,6 +450,7 @@ namespace StarterAssets
                 _playerActions -= RopeClimb;
                 _animator.applyRootMotion = false;
                 _animator.SetBool(_animIDRopeClimb, false);
+                transform.position=new Vector3(transform.position.x,transform.position.y,transform.position.z);
             }
         }
         private void RopeClimb()
