@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 
 public class WallJump : MonoBehaviour
@@ -14,12 +15,14 @@ public class WallJump : MonoBehaviour
     [SerializeField] private Rigidbody rb;
     [SerializeField] private bool isGrounded = true;
     [SerializeField] private bool checkingTimer = false;
+    [SerializeField] private Animator anim;
     private RaycastHit rightRay;
     private RaycastHit leftRay;
 
     private void Awake()
     {
         rb = GetComponent<Rigidbody>();
+        anim = GetComponent<Animator>();
     }
 
     private void Update()
@@ -46,6 +49,7 @@ public class WallJump : MonoBehaviour
             if (isGrounded)
             {
                 rb.useGravity = false;
+                
             }
         }
 
@@ -71,24 +75,30 @@ public class WallJump : MonoBehaviour
                 PlayerOnRightWall = true;
             }
         }
-        else if ((hitLeftWall && PlayerOnRightWall))
+        else if ((hitLeftWall && PlayerOnRightWall && !isGrounded))
         {
             if (Input.GetKeyDown(KeyCode.V))
             {
                 Debug.Log("Left wall jump");
+                characterController.enabled = false;
                 Vector3 destination = leftRay.point;
                 WallJumpRay(destination);
-                PlayerOnRightWall = false;
+                PlayerOnRightWall= false;
             }
         }
-        else if(hitLeftWall == null && hitRightWall == null)
+        else if(!hitLeftWall && !hitRightWall && !isGrounded)
         {
-            Debug.Log("no wall");
+            PlayerOnRightWall = false;
+            //characterController.enabled = true;
+            Debug.Log("PLAYER RECHED");
         }
-        else
-        {
-            ResetTime();
-        }
+        //else
+        //{
+        //    Debug.Log("PLAYER RECHED");
+        //    characterController.enabled = true;
+        //    ResetTime();
+        //    //PlayerOnRightWall = false;
+        //}
     }
 
 
@@ -98,6 +108,7 @@ public class WallJump : MonoBehaviour
         if (timer >= gravityTime)
         {
             rb.useGravity = true;
+            characterController.enabled = true;
             timer = 0.0f; 
             checkingTimer = false;
         }
@@ -105,7 +116,9 @@ public class WallJump : MonoBehaviour
 
     private void WallJumpRay(Vector3 destination)
     {
-        transform.position = destination;
+        //transform.position = destination;
+       transform.position =  Vector3.Lerp(transform.position, destination,1.0f);
+        StartCoroutine(StartAnimation());
         checkingTimer = true;
         timer = 0.0f;
     }
@@ -138,5 +151,12 @@ public class WallJump : MonoBehaviour
         {
             isGrounded = false;
         }
+    }
+
+    IEnumerator StartAnimation()
+    {
+        anim.SetTrigger("WallJump");
+        yield return new WaitForSeconds(0.40f);
+        anim.SetTrigger("WallJumpIdle");
     }
 }
