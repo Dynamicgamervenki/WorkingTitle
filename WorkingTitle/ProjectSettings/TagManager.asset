@@ -6,6 +6,8 @@ TagManager:
   tags:
   - Rope
   - Ground
+  - CinemachineTarget
+  - WallJump
   layers:
   - Default
   - TransparentFX
