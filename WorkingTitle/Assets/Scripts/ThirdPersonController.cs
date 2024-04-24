@@ -308,7 +308,7 @@ namespace StarterAssets
         private void JumpAndGravity()
         {
             
-            if (Grounded)
+            if (Grounded ||_ropeClimb)
             {
                 // reset the fall timeout timer
                 _fallTimeoutDelta = FallTimeout;
@@ -319,6 +319,7 @@ namespace StarterAssets
                     _animator.SetBool(_animIDJump, false);
                     //_animator.SetBool(_animIDJumpDouble, false);
                     _animator.SetBool(_animIDFreeFall, false);
+                    
                 }
 
                 // stop our velocity dropping infinitely when grounded
@@ -338,6 +339,9 @@ namespace StarterAssets
                     if (_hasAnimator)
                     {
                         _animator.SetBool(_animIDJump, true);
+                        _animator.SetBool(_animIDRopeClimb, false);
+                        _animator.applyRootMotion = false;
+                        _ropeClimb = false;
                     }
                 }
 
@@ -360,6 +364,9 @@ namespace StarterAssets
                     if (_hasAnimator)
                     {
                         _animator.SetBool(_animIDJump, true);
+                        _animator.SetBool(_animIDRopeClimb, false);
+                        _animator.applyRootMotion = false;
+                        _ropeClimb = false;
                     }
                 }
                 // fall timeout
@@ -455,10 +462,10 @@ namespace StarterAssets
         }
         private void RopeClimb()
         {
-            if (_playerRopeClimb._transform != null)
-            {
-                transform.position = new Vector3(_playerRopeClimb._transform.position.x, transform.position.y, _playerRopeClimb._transform.position.z);
-            }
+            //if (_playerRopeClimb._transform != null)
+            //{
+            //    transform.position = new Vector3(_playerRopeClimb._transform.position.x, transform.position.y, _playerRopeClimb._transform.position.z);
+            //}
             _animator.SetInteger(_animIDRopeClimbValue, (int)_input.move.y);
         }
     }

@@ -15,13 +15,15 @@ public class SpiderIdleBehaviour : StateMachineBehaviour
     // OnStateUpdate is called on each Update frame between OnStateEnter and OnStateExit callbacks
     override public void OnStateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
-        if(_playerRef != null)
+
+        if(_playerRef != null&& Vector3.Distance(animator.transform.position, _playerRef.position) > 1.3f)
         {
             animator.SetBool("Walk", true);
         }
         else
         {
             animator.SetBool("Walk", false);
+            animator.SetTrigger("Attack");
             return;
         }
     }

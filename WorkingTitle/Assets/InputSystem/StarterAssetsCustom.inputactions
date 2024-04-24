@@ -1,5 +1,5 @@
 {
-    "name": "StarterAssets",
+    "name": "StarterAssetsCustom",
     "maps": [
         {
             "name": "Player",
@@ -45,6 +45,15 @@
                     "name": "Interact",
                     "type": "Button",
                     "id": "b725d1ac-e38a-436d-944d-e2349899ed7c",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "Fire1",
+                    "type": "Button",
+                    "id": "8b9c780f-389c-40f2-b45c-73431967301b",
                     "expectedControlType": "Button",
                     "processors": "",
                     "interactions": "",
@@ -236,6 +245,17 @@
                     "processors": "",
                     "groups": "",
                     "action": "Interact",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "1de2f3b0-614d-4015-a2e6-c5dd816894a1",
+                    "path": "<Mouse>/leftButton",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Fire1",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }
