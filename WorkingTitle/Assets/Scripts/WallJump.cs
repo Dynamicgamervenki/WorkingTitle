@@ -66,7 +66,7 @@ public class WallJump : MonoBehaviour
 
         if (hitRightWall && !PlayerOnRightWall)
         {
-            if (Input.GetKeyDown(KeyCode.V))
+            if (Input.GetKeyDown(KeyCode.Space))
             {
                 Debug.Log("Right wall jump");
                 characterController.enabled = false;
@@ -77,7 +77,7 @@ public class WallJump : MonoBehaviour
         }
         else if ((hitLeftWall && PlayerOnRightWall && !isGrounded))
         {
-            if (Input.GetKeyDown(KeyCode.V))
+            if (Input.GetKeyDown(KeyCode.Space))
             {
                 Debug.Log("Left wall jump");
                 characterController.enabled = false;
@@ -89,8 +89,19 @@ public class WallJump : MonoBehaviour
         else if(!hitLeftWall && !hitRightWall && !isGrounded)
         {
             PlayerOnRightWall = false;
+            anim.SetLayerWeight(1, 0);
             //characterController.enabled = true;
             Debug.Log("PLAYER RECHED");
+        }
+        else if(hitLeftWall && hitRightWall && isGrounded)
+        {
+            PlayerOnRightWall = false;
+            anim.SetLayerWeight(1, 0);
+        }
+        else if (!hitLeftWall && !hitRightWall && !isGrounded)
+        {
+            Debug.Log("Player unable to reach top postion");
+           // WallJumpRay();
         }
         //else
         //{
@@ -109,6 +120,8 @@ public class WallJump : MonoBehaviour
         {
             rb.useGravity = true;
             characterController.enabled = true;
+            anim.SetTrigger("Idle");
+            anim.SetLayerWeight(1, 0);
             timer = 0.0f; 
             checkingTimer = false;
         }
@@ -116,9 +129,8 @@ public class WallJump : MonoBehaviour
 
     private void WallJumpRay(Vector3 destination)
     {
-        //transform.position = destination;
        transform.position =  Vector3.Lerp(transform.position, destination,1.0f);
-        StartCoroutine(StartAnimation());
+       StartCoroutine(StartAnimation());
         checkingTimer = true;
         timer = 0.0f;
     }
@@ -155,8 +167,9 @@ public class WallJump : MonoBehaviour
 
     IEnumerator StartAnimation()
     {
+        anim.SetLayerWeight(1, 2);
         anim.SetTrigger("WallJump");
         yield return new WaitForSeconds(0.40f);
-        anim.SetTrigger("WallJumpIdle");
+      //  anim.SetTrigger("WallJumpIdle");
     }
 }
