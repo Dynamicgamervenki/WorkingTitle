@@ -101,22 +101,14 @@ public class WallJump : MonoBehaviour
         else if (!hitLeftWall && !hitRightWall && !isGrounded)
         {
             Debug.Log("Player unable to reach top postion");
-           // WallJumpRay();
         }
-        //else
-        //{
-        //    Debug.Log("PLAYER RECHED");
-        //    characterController.enabled = true;
-        //    ResetTime();
-        //    //PlayerOnRightWall = false;
-        //}
     }
 
 
     private void CheckTimer()
     {
-        timer += Time.deltaTime;
-        if (timer >= gravityTime)
+        timer += Time.deltaTime;       
+        if (timer >= gravityTime)   //checking if timer is greater or equal to the mentioned time [2 seconds in this case]
         {
             rb.useGravity = true;
             characterController.enabled = true;
@@ -167,9 +159,10 @@ public class WallJump : MonoBehaviour
 
     IEnumerator StartAnimation()
     {
-        anim.SetLayerWeight(1, 2);
-        anim.SetTrigger("WallJump");
+        anim.SetLayerWeight(1, 2);         
+        anim.SetTrigger("WallJump");        // wall jump aniamtiion
+        anim.SetBool("Jump", false); ;
         yield return new WaitForSeconds(0.40f);
-      //  anim.SetTrigger("WallJumpIdle");
+        anim.SetTrigger("WallJumpIdle");        // for sliding animation 
     }
 }
