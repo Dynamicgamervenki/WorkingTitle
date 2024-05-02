@@ -2111,6 +2111,10 @@ PrefabInstance:
         type: 3}
       insertIndex: -1
       addedObject: {fileID: 1896609670}
+    - targetCorrespondingSourceObject: {fileID: 4416926081852918481, guid: 64dce48905ffd9b4293e595fa6941544,
+        type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1896609676}
   m_SourcePrefab: {fileID: 100100000, guid: 64dce48905ffd9b4293e595fa6941544, type: 3}
 --- !u!114 &1896609658 stripped
 MonoBehaviour:
@@ -2160,6 +2164,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: eeaad7ee189379d4c853bbd9e0ad7909, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &1896609676
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 762324587}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 10279a3c10bc93148acce7c14dbc0ae0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _electricWooshSound: {fileID: 8300000, guid: 1114701ffa3f3cf49a544d83e7fa6431, type: 3}
+  _spiderWalkSound: {fileID: 0}
 --- !u!1 &1903560439
 GameObject:
   m_ObjectHideFlags: 0

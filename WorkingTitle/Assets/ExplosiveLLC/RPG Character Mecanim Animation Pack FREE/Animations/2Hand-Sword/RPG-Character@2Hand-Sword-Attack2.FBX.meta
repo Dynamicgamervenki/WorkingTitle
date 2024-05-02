@@ -790,6 +790,14 @@ ModelImporter:
         floatParameter: 0
         intParameter: 0
         messageOptions: 0
+      - time: 0.34504
+        functionName: ElectricWoosh
+        data: 
+        objectReferenceParameter: {fileID: 919132149155446097, guid: 36078ab0369161e49a29d349ae3e0739,
+          type: 3}
+        floatParameter: 0
+        intParameter: 0
+        messageOptions: 0
       transformMask: []
       maskType: 3
       maskSource: {fileID: 101100000, guid: 4ebc95c8618479f4d8251c7dafa10029, type: 2}

@@ -5,11 +5,14 @@ using UnityEngine;
 public class Combo : StateMachineBehaviour
 {
     // OnStateEnter is called when a transition starts and the state machine starts to evaluate this state
+    [SerializeField]float _keyFrame;
+    [SerializeField] bool _canReciveInput;
     override public void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
         animator.applyRootMotion = true;
         PlayerManager.Instance._ThirdPersonControllerInstance._canMove = false;
         Debug.LogError("t");
+        _canReciveInput=true;
     }
     [SerializeField] int _comboCount;
     //MonoBehaviour mono = new MonoBehaviour();
@@ -25,11 +28,12 @@ public class Combo : StateMachineBehaviour
     }
 
     // OnStateExit is called when a transition ends and the state machine finishes evaluating this state
-    //override public void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
-    //{
-    //    //if(stateInfo.length>1)
-    //        animator.applyRootMotion = false;
-    //}
+    override public void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
+    {
+        //if(stateInfo.length>1)
+       // animator.applyRootMotion = false;
+        _canReciveInput = true;
+    }
     IEnumerator Motion(float time,Animator anim)
     {
         
