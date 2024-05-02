@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: ComboAttackData 2
   m_EditorClassIdentifier: 
   startTime: 0
-  endTime: 0
-  InputReciveTime: 0
+  endTime: 1
+  InputReciveTime: 0.8
   AnimCompleteTime: 0
-  AnimationName: 2Hand-Sword-Attack1
+  AnimationName: 2Hand-Sword-Attack3

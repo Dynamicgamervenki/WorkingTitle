@@ -9,6 +9,9 @@ public class PlayerManager : MonoBehaviour
     public ThirdPersonController _ThirdPersonControllerInstance;
     public PlayerComboSystem _PlayerComboSystemInstance;
     public StarterAssetsInputs _StarterAssetsInputsInstance;
+    public PlayerComboSystem _playerComboSystemInstance;
+    public PlayerRopeClimb _PlayerRopeClimbInstance;
+    public SwordEquip _SwordEquipInstance;
     private void Awake()
     {
         if(Instance == null)
@@ -23,5 +26,8 @@ public class PlayerManager : MonoBehaviour
         _ThirdPersonControllerInstance= Temp.GetComponent<ThirdPersonController>();
         _PlayerComboSystemInstance=Temp.GetComponent<PlayerComboSystem>();
         _StarterAssetsInputsInstance=Temp.GetComponent<StarterAssetsInputs>();
+        _playerComboSystemInstance = Temp.GetComponent<PlayerComboSystem>();
+        _PlayerRopeClimbInstance=Temp.GetComponentInChildren<PlayerRopeClimb>();
+        _SwordEquipInstance=Temp.GetComponentInChildren<SwordEquip>();
     }
 }

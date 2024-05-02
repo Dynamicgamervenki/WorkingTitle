@@ -1,20 +1,13 @@
-﻿ using UnityEngine;
+using StarterAssets;
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
 using UnityEngine.Events;
-
-#if ENABLE_INPUT_SYSTEM
 using UnityEngine.InputSystem;
-using UnityEngine.InputSystem.XR;
-#endif
 
-/* Note: animations are called via the controller for both the character and capsule using animator null checks
- */
-
-namespace StarterAssets
+public class Movement : MonoBehaviour
 {
-    [RequireComponent(typeof(CharacterController))]
-#if ENABLE_INPUT_SYSTEM 
-    [RequireComponent(typeof(PlayerInput))]
-#endif
+    // Start is called before the first frame update
     public class ThirdPersonController : MonoBehaviour
     {
         [Header("Player")]
@@ -79,12 +72,6 @@ namespace StarterAssets
         [Tooltip("For locking the camera position on all axis")]
         public bool LockCameraPosition = false;
 
-        [Tooltip("PLayer Roll")]
-        [SerializeField] public bool _playerCanRoll;
-
-        [Tooltip("PLayer Sword Collider")]
-        public Collider _swordCollider;
-
         // cinemachine
         private float _cinemachineTargetYaw;
         private float _cinemachineTargetPitch;
@@ -96,6 +83,7 @@ namespace StarterAssets
         private float _rotationVelocity;
         private float _verticalVelocity;
         private float _terminalVelocity = 53.0f;
+        private Vector3 _direction;
 
         // timeout deltatime
         private float _jumpTimeoutDelta;
@@ -110,10 +98,9 @@ namespace StarterAssets
         private int _animIDMotionSpeed;
         private int _animIDRopeClimb;
         private int _animIDRopeClimbValue;
-        private int _animIDRoll;
 
         // rope climb
-        public bool _ropeClimb,_canMove=true;
+        public bool _ropeClimb, _canMove = true;
         public PlayerRopeClimb _playerRopeClimb;
 
 #if ENABLE_INPUT_SYSTEM 
@@ -155,7 +142,7 @@ namespace StarterAssets
         private void Start()
         {
             _cinemachineTargetYaw = CinemachineCameraTarget.transform.rotation.eulerAngles.y;
-            
+
             _hasAnimator = TryGetComponent(out _animator);
             _controller = GetComponent<CharacterController>();
             _input = GetComponent<StarterAssetsInputs>();
@@ -174,7 +161,6 @@ namespace StarterAssets
             _playerActions += GroundedCheck;
             _playerActions += Move;
             _canMove = true;
-            _playerCanRoll = true;
         }
 
         private void Update()
@@ -182,7 +168,7 @@ namespace StarterAssets
             _hasAnimator = TryGetComponent(out _animator);
             _playerActions?.Invoke();
             //if(Input.GetKeyDown(KeyCode.E)) { PerformRopeClimb(); }
-           
+
             //JumpAndGravity();
             //GroundedCheck();
             //Move();
@@ -204,7 +190,6 @@ namespace StarterAssets
             _animIDMotionSpeed = Animator.StringToHash("MotionSpeed");
             _animIDRopeClimb = Animator.StringToHash("RopeClimb");
             _animIDRopeClimbValue = Animator.StringToHash("RopeClimbValue");
-            _animIDRoll= Animator.StringToHash("Roll");
         }
 
         private void GroundedCheck()
@@ -214,6 +199,7 @@ namespace StarterAssets
                 transform.position.z);
             Grounded = Physics.CheckSphere(spherePosition, GroundedRadius, GroundLayers,
                 QueryTriggerInteraction.Ignore);
+
             // update animator if using character
             if (_hasAnimator)
             {
@@ -242,7 +228,7 @@ namespace StarterAssets
                 _cinemachineTargetYaw, 0.0f);
         }
 
-        
+
         private void Move()
         {
             if (_canMove)
@@ -319,8 +305,8 @@ namespace StarterAssets
         public int jumpCount;
         private void JumpAndGravity()
         {
-            
-            if (Grounded ||_ropeClimb)
+
+            if (Grounded || _ropeClimb)
             {
                 // reset the fall timeout timer
                 _fallTimeoutDelta = FallTimeout;
@@ -331,7 +317,7 @@ namespace StarterAssets
                     _animator.SetBool(_animIDJump, false);
                     //_animator.SetBool(_animIDJumpDouble, false);
                     _animator.SetBool(_animIDFreeFall, false);
-                    
+
                 }
 
                 // stop our velocity dropping infinitely when grounded
@@ -367,11 +353,11 @@ namespace StarterAssets
             {
                 // reset the jump timeout timer
                 _jumpTimeoutDelta = JumpTimeout;
-                if (_input.inputActions.Player.Jump.WasPressedThisFrame() && jumpCount>0)
+                if (_input.inputActions.Player.Jump.WasPressedThisFrame() && jumpCount > 0)
                 {
                     // the square root of H * -2 * G = how much velocity needed to reach desired height
                     _verticalVelocity = Mathf.Sqrt(DoubleJumpHeight * -2f * Gravity);
-                    jumpCount=0;
+                    jumpCount = 0;
                     // update animator if using character
                     if (_hasAnimator)
                     {
@@ -462,50 +448,21 @@ namespace StarterAssets
                 _playerActions -= RopeClimb;
                 _animator.applyRootMotion = false;
                 _animator.SetBool(_animIDRopeClimb, false);
-                transform.position=new Vector3(transform.position.x,transform.position.y,transform.position.z);
+                transform.position = new Vector3(transform.position.x, transform.position.y, transform.position.z);
             }
         }
         private void RopeClimb()
         {
             if (PlayerManager.Instance._PlayerRopeClimbInstance._transform != null)
             {
-            //    transform.position = new Vector3(_playerRopeClimb._transform.position.x, transform.position.y, _playerRopeClimb._transform.position.z);
-                  _animator.SetInteger(_animIDRopeClimbValue, (int)_input.move.y);
+                //    transform.position = new Vector3(_playerRopeClimb._transform.position.x, transform.position.y, _playerRopeClimb._transform.position.z);
+                _animator.SetInteger(_animIDRopeClimbValue, (int)_input.move.y);
             }
         }
-        public float PlayerBounceValue;
+
         public void PlayerBounce()
         {
-            Debug.Log("OKOK");
-            _verticalVelocity = Mathf.Sqrt(PlayerBounceValue * -2f * Gravity);
+            _verticalVelocity = Mathf.Sqrt(1000f * -2f * Gravity);
         }
-
-        public void PlayerRollStart(InputAction.CallbackContext callbackContext)
-        {
-            if(_playerCanRoll)
-            {
-                //_playerCanRoll = false;
-                //_animator.applyRootMotion = true;
-                _animator.SetTrigger(_animIDRoll);
-            }
-        }
-
-        public void PlayerRollEnd() 
-        {
-            //_animator.applyRootMotion = false;
-            //_playerCanRoll = true;
-        }
-
-
-        ///this is for sword attact detection
-        public void SwordEnable()
-        {
-            _swordCollider.enabled = true;
-        }
-        public void SwordDisable()
-        {
-            _swordCollider.enabled = false;
-        }
-       
     }
 }

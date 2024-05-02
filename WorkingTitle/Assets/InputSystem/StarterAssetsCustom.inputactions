@@ -29,7 +29,7 @@
                     "id": "8c4abdf8-4099-493a-aa1a-129acec7c3df",
                     "expectedControlType": "Button",
                     "processors": "",
-                    "interactions": "",
+                    "interactions": "MultiTap",
                     "initialStateCheck": false
                 },
                 {
@@ -54,6 +54,24 @@
                     "name": "Fire1",
                     "type": "Button",
                     "id": "8b9c780f-389c-40f2-b45c-73431967301b",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "Melee",
+                    "type": "Button",
+                    "id": "32fa02a2-6d00-4296-a1b2-c017bec3dec1",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "Roll",
+                    "type": "Button",
+                    "id": "ecf1e4ca-07f8-49e1-9f19-00fafcc908a9",
                     "expectedControlType": "Button",
                     "processors": "",
                     "interactions": "",
@@ -256,6 +274,28 @@
                     "processors": "",
                     "groups": "",
                     "action": "Fire1",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "0dce1475-8b3f-4c2d-9d3a-96e905473fca",
+                    "path": "<Keyboard>/x",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Melee",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "39549051-04c2-4c5d-872c-53472426de58",
+                    "path": "<Keyboard>/v",
+                    "interactions": "MultiTap",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Roll",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

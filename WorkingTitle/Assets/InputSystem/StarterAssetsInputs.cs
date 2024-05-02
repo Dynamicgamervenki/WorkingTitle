@@ -14,6 +14,7 @@ namespace StarterAssets
 		public bool jump;
 		public bool sprint;
 		public bool interact;
+		public bool attack;
 
 		[Header("Movement Settings")]
 		public bool analogMovement;
@@ -27,6 +28,8 @@ namespace StarterAssets
         {
             inputActions = new StarterAssetsCustom();
 			inputActions.Player.Interact.started += transform.GetComponent<ThirdPersonController>().PerformRopeClimb;
+			inputActions.Player.Roll.performed += transform.GetComponent<ThirdPersonController>().PlayerRollStart;
+			inputActions.Player.Fire1.canceled += attackEnd;
         }
         private void OnEnable()
         {
@@ -62,6 +65,11 @@ namespace StarterAssets
 			if(value.isPressed)
 				InteractInput();
 		}
+		public void OnFire1(InputValue value)
+		{
+			if (value.isPressed)
+				attack = true;
+		}
 #endif
 
 
@@ -88,7 +96,10 @@ namespace StarterAssets
 		{
 			interact = !interact;
 		}
-
+		void attackEnd(InputAction.CallbackContext value)
+		{
+                attack = false;
+        }
 		private void OnApplicationFocus(bool hasFocus)
 		{
 			SetCursorState(cursorLocked);
@@ -101,6 +112,9 @@ namespace StarterAssets
         private void OnDisable()
         {
             inputActions.Disable();
+            inputActions.Player.Interact.started += transform.GetComponent<ThirdPersonController>().PerformRopeClimb;
+            inputActions.Player.Roll.performed += transform.GetComponent<ThirdPersonController>().PlayerRollStart;
+
         }
     }
 	

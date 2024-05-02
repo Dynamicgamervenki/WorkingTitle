@@ -25,6 +25,8 @@ public class PlayerComboSystem : MonoBehaviour
         //PlayerManger.instance.controllerInstance.playerInputActions.Player.Attack.started += Combo;
         //PlayerManger.instance.controllerInstance.PlayerActions += ExitAttack;
         PlayerManager.Instance._StarterAssetsInputsInstance.inputActions.Player.Fire1.started += Combo;
+        Temp = comboDataMid;
+        _meleeId = Animator.StringToHash("Melee");
     }
 
     public void Combo(InputAction.CallbackContext callback)
@@ -34,7 +36,7 @@ public class PlayerComboSystem : MonoBehaviour
             comboCount = 0;
         }
         //Debug.LogError(lastComboEnd);
-        if (Time.time - lastComboEnd > 0.8f && comboCount< Temp.Count) 
+        if (Time.time - lastComboEnd > Temp[comboCount].InputReciveTime && comboCount< Temp.Count) 
         {
             //Debug.LogError("combo");
             lastComboEnd = Time.time;
@@ -54,15 +56,18 @@ public class PlayerComboSystem : MonoBehaviour
     }
     IEnumerator PlayerComboAnimation(AttackData data)
     {
-        //PlayerManger.instance.controllerInstance.canMove = false;
-        playerRotate = true;
+        PlayerManager.Instance._ThirdPersonControllerInstance._canMove = false;
+        animator.applyRootMotion = true;
+        //playerRotate = true;
         //animator.Play(data.AnimationName);
         Debug.Log("no");
         animator.CrossFade(data.AnimationName, 0.2f);
+        //animator.Play(data.AnimationName);
         yield return new WaitForSeconds(data.endTime);
+        animator.applyRootMotion = false;
         Debug.Log("yes");
         playerRotate = false;
-        //PlayerManger.instance.controllerInstance.canMove = true;
+        PlayerManager.Instance._ThirdPersonControllerInstance._canMove = true;
     }
 
     void ExitCombo()
@@ -78,5 +83,12 @@ public class PlayerComboSystem : MonoBehaviour
             //Debug.LogError("end"+lastComboEnd);
             Invoke(nameof(ExitCombo), 1.5f);
         }
+    }
+    public bool flag;
+    int _meleeId;
+    private void EquipAndUnequip(InputAction.CallbackContext context)
+    {
+        flag=!flag;
+        animator.SetBool(_meleeId, flag);
     }
 }

@@ -51,7 +51,7 @@ public partial class @StarterAssetsCustom: IInputActionCollection2, IDisposable
                     ""id"": ""8c4abdf8-4099-493a-aa1a-129acec7c3df"",
                     ""expectedControlType"": ""Button"",
                     ""processors"": """",
-                    ""interactions"": """",
+                    ""interactions"": ""MultiTap"",
                     ""initialStateCheck"": false
                 },
                 {
@@ -76,6 +76,24 @@ public partial class @StarterAssetsCustom: IInputActionCollection2, IDisposable
                     ""name"": ""Fire1"",
                     ""type"": ""Button"",
                     ""id"": ""8b9c780f-389c-40f2-b45c-73431967301b"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Melee"",
+                    ""type"": ""Button"",
+                    ""id"": ""32fa02a2-6d00-4296-a1b2-c017bec3dec1"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Roll"",
+                    ""type"": ""Button"",
+                    ""id"": ""ecf1e4ca-07f8-49e1-9f19-00fafcc908a9"",
                     ""expectedControlType"": ""Button"",
                     ""processors"": """",
                     ""interactions"": """",
@@ -280,6 +298,28 @@ public partial class @StarterAssetsCustom: IInputActionCollection2, IDisposable
                     ""action"": ""Fire1"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""0dce1475-8b3f-4c2d-9d3a-96e905473fca"",
+                    ""path"": ""<Keyboard>/x"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Melee"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""39549051-04c2-4c5d-872c-53472426de58"",
+                    ""path"": ""<Keyboard>/v"",
+                    ""interactions"": ""MultiTap"",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Roll"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -342,6 +382,8 @@ public partial class @StarterAssetsCustom: IInputActionCollection2, IDisposable
         m_Player_Sprint = m_Player.FindAction("Sprint", throwIfNotFound: true);
         m_Player_Interact = m_Player.FindAction("Interact", throwIfNotFound: true);
         m_Player_Fire1 = m_Player.FindAction("Fire1", throwIfNotFound: true);
+        m_Player_Melee = m_Player.FindAction("Melee", throwIfNotFound: true);
+        m_Player_Roll = m_Player.FindAction("Roll", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -409,6 +451,8 @@ public partial class @StarterAssetsCustom: IInputActionCollection2, IDisposable
     private readonly InputAction m_Player_Sprint;
     private readonly InputAction m_Player_Interact;
     private readonly InputAction m_Player_Fire1;
+    private readonly InputAction m_Player_Melee;
+    private readonly InputAction m_Player_Roll;
     public struct PlayerActions
     {
         private @StarterAssetsCustom m_Wrapper;
@@ -419,6 +463,8 @@ public partial class @StarterAssetsCustom: IInputActionCollection2, IDisposable
         public InputAction @Sprint => m_Wrapper.m_Player_Sprint;
         public InputAction @Interact => m_Wrapper.m_Player_Interact;
         public InputAction @Fire1 => m_Wrapper.m_Player_Fire1;
+        public InputAction @Melee => m_Wrapper.m_Player_Melee;
+        public InputAction @Roll => m_Wrapper.m_Player_Roll;
         public InputActionMap Get() { return m_Wrapper.m_Player; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -446,6 +492,12 @@ public partial class @StarterAssetsCustom: IInputActionCollection2, IDisposable
             @Fire1.started += instance.OnFire1;
             @Fire1.performed += instance.OnFire1;
             @Fire1.canceled += instance.OnFire1;
+            @Melee.started += instance.OnMelee;
+            @Melee.performed += instance.OnMelee;
+            @Melee.canceled += instance.OnMelee;
+            @Roll.started += instance.OnRoll;
+            @Roll.performed += instance.OnRoll;
+            @Roll.canceled += instance.OnRoll;
         }
 
         private void UnregisterCallbacks(IPlayerActions instance)
@@ -468,6 +520,12 @@ public partial class @StarterAssetsCustom: IInputActionCollection2, IDisposable
             @Fire1.started -= instance.OnFire1;
             @Fire1.performed -= instance.OnFire1;
             @Fire1.canceled -= instance.OnFire1;
+            @Melee.started -= instance.OnMelee;
+            @Melee.performed -= instance.OnMelee;
+            @Melee.canceled -= instance.OnMelee;
+            @Roll.started -= instance.OnRoll;
+            @Roll.performed -= instance.OnRoll;
+            @Roll.canceled -= instance.OnRoll;
         }
 
         public void RemoveCallbacks(IPlayerActions instance)
@@ -529,5 +587,7 @@ public partial class @StarterAssetsCustom: IInputActionCollection2, IDisposable
         void OnSprint(InputAction.CallbackContext context);
         void OnInteract(InputAction.CallbackContext context);
         void OnFire1(InputAction.CallbackContext context);
+        void OnMelee(InputAction.CallbackContext context);
+        void OnRoll(InputAction.CallbackContext context);
     }
 }

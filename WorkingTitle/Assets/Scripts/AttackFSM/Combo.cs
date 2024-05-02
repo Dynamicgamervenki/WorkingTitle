@@ -2,28 +2,39 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class SpiderAttackBehaviour : StateMachineBehaviour
+public class Combo : StateMachineBehaviour
 {
-    public Transform player;
     // OnStateEnter is called when a transition starts and the state machine starts to evaluate this state
     override public void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
-        player= animator.transform.GetComponent<SpiderScripts>().PlayerRef;
-
+        animator.applyRootMotion = true;
+        PlayerManager.Instance._ThirdPersonControllerInstance._canMove = false;
+        Debug.LogError("t");
     }
-
+    [SerializeField] int _comboCount;
+    //MonoBehaviour mono = new MonoBehaviour();
     // OnStateUpdate is called on each Update frame between OnStateEnter and OnStateExit callbacks
     override public void OnStateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
-        animator.transform.LookAt(player);
+        if (PlayerManager.Instance._StarterAssetsInputsInstance.inputActions.Player.Fire1.WasPressedThisFrame())
+        {
+            animator.SetInteger("ComboValue", _comboCount);
+            //mono.StartCoroutine(Motion(stateInfo.length,animator));
+        }
+
     }
 
     // OnStateExit is called when a transition ends and the state machine finishes evaluating this state
     //override public void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     //{
-    //    
+    //    //if(stateInfo.length>1)
+    //        animator.applyRootMotion = false;
     //}
-
+    IEnumerator Motion(float time,Animator anim)
+    {
+        
+        yield return new WaitForSeconds(time);
+    }
     // OnStateMove is called right after Animator.OnAnimatorMove()
     //override public void OnStateMove(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     //{
