@@ -94,6 +94,7 @@ public class PlayerLocomotion : MonoBehaviour
 
     private void HandleFallingAndLanding()
     {
+
         RaycastHit hit;
         Vector3 RaycastOrigin = transform.position;
         RaycastOrigin.y = RaycastOrigin.y + rayCastOffSet;
@@ -127,10 +128,16 @@ public class PlayerLocomotion : MonoBehaviour
     }
 
     public int jumpsPerformed = 0;
+
     public void HandleJumping()
     {
-        if ((isGrounded || !isGrounded && jumpsPerformed <2))
+        if (isGrounded || jumpsPerformed < 2)
         {
+            if (isGrounded)
+            {
+                jumpsPerformed = 0; 
+            }
+
             jumpsPerformed++;
 
             animatorManager.anim.SetBool("isJumping", true);
@@ -140,12 +147,8 @@ public class PlayerLocomotion : MonoBehaviour
             Vector3 playerVelocity = moveDirection;
             playerVelocity.y = jumpingVelocity;
             rb.velocity = playerVelocity;
-            
-            if(jumpsPerformed == 2)
-            {
-                jumpsPerformed = 0;
-            }
         }
     }
+
 
 }
