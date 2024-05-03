@@ -7,7 +7,7 @@ public class WallJump : MonoBehaviour
     [SerializeField] private bool PlayerCanWallJump = false;
     [SerializeField] private Transform RaycastTransform;
     [SerializeField] private float RaycastDistance = 1.0f;
-    [SerializeField] private CharacterController characterController;
+  //  [SerializeField] private CharacterController characterController;
     [SerializeField] private bool PlayerOnRightWall = false;
     [SerializeField] private float gravityTime = 2.0f;
     [SerializeField] private float timer = 0.0f;
@@ -69,7 +69,7 @@ public class WallJump : MonoBehaviour
             if (Input.GetKeyDown(KeyCode.Space))
             {
                 Debug.Log("Right wall jump");
-                characterController.enabled = false;
+              //  characterController.enabled = false;
                 Vector3 destination = rightRay.point;
                 WallJumpRay(destination);
                 PlayerOnRightWall = true;
@@ -80,7 +80,7 @@ public class WallJump : MonoBehaviour
             if (Input.GetKeyDown(KeyCode.Space))
             {
                 Debug.Log("Left wall jump");
-                characterController.enabled = false;
+             //   characterController.enabled = false;
                 Vector3 destination = leftRay.point;
                 WallJumpRay(destination);
                 PlayerOnRightWall= false;
@@ -111,7 +111,7 @@ public class WallJump : MonoBehaviour
         if (timer >= gravityTime)   //checking if timer is greater or equal to the mentioned time [2 seconds in this case]
         {
             rb.useGravity = true;
-            characterController.enabled = true;
+         //   characterController.enabled = true;
             anim.SetTrigger("Idle");
             anim.SetLayerWeight(1, 0);
             timer = 0.0f; 
@@ -122,7 +122,7 @@ public class WallJump : MonoBehaviour
     private void WallJumpRay(Vector3 destination)
     {
        transform.position =  Vector3.Lerp(transform.position, destination,1.0f);
-       StartCoroutine(StartAnimation());
+     //  StartCoroutine(StartAnimation());
         checkingTimer = true;
         timer = 0.0f;
     }

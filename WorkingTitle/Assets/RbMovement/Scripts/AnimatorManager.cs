@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class AnimatorManager : MonoBehaviour
 {
-    private Animator anim;
+    public Animator anim;
     private int Horizontal;
     private int Vertical;
 
@@ -13,6 +13,12 @@ public class AnimatorManager : MonoBehaviour
         anim = GetComponent<Animator>();
         Horizontal = Animator.StringToHash("Horizontal");   
         Vertical = Animator.StringToHash("Vertical");
+    }
+
+    public void PlayTargetAnimations(string targetAnimation , bool isInteracting)
+    {
+        anim.SetBool("isInteracting", isInteracting);
+        anim.CrossFade(targetAnimation, 0.2f);
     }
 
     public void UpdateAnimatorValues(float horizontalMovement,float verticalMovement)
