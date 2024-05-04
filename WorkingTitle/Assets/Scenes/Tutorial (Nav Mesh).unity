@@ -153,6 +153,12 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 0.01071256, y: 0.13120246, z: 0.037409242}
   m_Center: {x: -0.00035627294, y: 0.06776185, z: 0.005450466}
+--- !u!4 &182698497 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 8338988566280778637, guid: 64dce48905ffd9b4293e595fa6941544,
+    type: 3}
+  m_PrefabInstance: {fileID: 1762682258}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &202354260 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 8459032577406137062, guid: 731f4bf6988fb734aa49eb6ec4875767,
@@ -445,12 +451,6 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 0.010000001, y: 0.15037172, z: 0.014726863}
   m_Center: {x: 9.313226e-10, y: 0.07572511, z: 0.0015201195}
---- !u!4 &700051398 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 8338988566280778637, guid: 64dce48905ffd9b4293e595fa6941544,
-    type: 3}
-  m_PrefabInstance: {fileID: 1762682258}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &738829791 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 3132479191782551396, guid: 731f4bf6988fb734aa49eb6ec4875767,
@@ -758,7 +758,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 100100, guid: f5a9bd478ca094495a4520e37f57420d, type: 3}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 100100, guid: f5a9bd478ca094495a4520e37f57420d, type: 3}
       propertyPath: m_TagString
@@ -934,6 +934,12 @@ MeshCollider:
   m_Convex: 0
   m_CookingOptions: 30
   m_Mesh: {fileID: 4300000, guid: f5a9bd478ca094495a4520e37f57420d, type: 3}
+--- !u!4 &1004324815 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 400100, guid: f5a9bd478ca094495a4520e37f57420d,
+    type: 3}
+  m_PrefabInstance: {fileID: 1004324804}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1100095251
 GameObject:
   m_ObjectHideFlags: 0
@@ -1720,12 +1726,12 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Follow
       value: 
-      objectReference: {fileID: 700051398}
+      objectReference: {fileID: 182698497}
     - target: {fileID: 2070925441746177913, guid: a1a802ecaf6775746bb2a929fb554ad8,
         type: 3}
       propertyPath: m_LookAt
       value: 
-      objectReference: {fileID: 1896609661}
+      objectReference: {fileID: 1004324815}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []

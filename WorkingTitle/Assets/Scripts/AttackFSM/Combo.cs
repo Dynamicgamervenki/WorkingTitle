@@ -5,7 +5,7 @@ using UnityEngine;
 public class Combo : StateMachineBehaviour
 {
     // OnStateEnter is called when a transition starts and the state machine starts to evaluate this state
-    [SerializeField]float _keyFrame;
+    [SerializeField]float _keyFrameMin,_keyFrameMax;
     [SerializeField] bool _canReciveInput;
     override public void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
@@ -19,8 +19,10 @@ public class Combo : StateMachineBehaviour
     // OnStateUpdate is called on each Update frame between OnStateEnter and OnStateExit callbacks
     override public void OnStateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
-        if (PlayerManager.Instance._StarterAssetsInputsInstance.inputActions.Player.Fire1.WasPressedThisFrame())
+        if (PlayerManager.Instance._StarterAssetsInputsInstance.inputActions.Player.Fire1.WasPressedThisFrame() && stateInfo.normalizedTime> _keyFrameMin && stateInfo.normalizedTime < _keyFrameMax && _canReciveInput)
         {
+            
+            _canReciveInput=false;
             animator.SetInteger("ComboValue", _comboCount);
             //mono.StartCoroutine(Motion(stateInfo.length,animator));
         }
