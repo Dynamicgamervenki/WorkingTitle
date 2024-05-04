@@ -7,6 +7,7 @@ public class InputManager : MonoBehaviour
 {
     PlayerControls playerControls;
     AnimatorManager animatorManager;
+    PlayerLocomotion playerLocomotion;
 
     [Header("Inputs")]
     public Vector2 movementInput;
@@ -19,9 +20,12 @@ public class InputManager : MonoBehaviour
     public float horizontalInput;
     public float verticalInput;
 
+    public bool jumpInput;
+
     private void Awake()
     {
         animatorManager = GetComponent<AnimatorManager>();
+        playerLocomotion = GetComponent<PlayerLocomotion>();
     }
     private void OnEnable()
     {
@@ -38,6 +42,11 @@ public class InputManager : MonoBehaviour
             {
                 cameraInput = ctx.ReadValue<Vector2>();
             };
+
+            playerControls.PlayerMovement.Jump.performed += ctx =>
+            {
+                jumpInput = true;
+            };
         }
         playerControls.Enable();
     }
@@ -51,6 +60,7 @@ public class InputManager : MonoBehaviour
     {
         // for calling all the functions , this function itself is called in Update function Nigga
         HandleMovementInput();
+        HandleJumpingInput();
     }
 
     private void HandleMovementInput()
@@ -63,5 +73,14 @@ public class InputManager : MonoBehaviour
 
         moveAmount = Mathf.Clamp01(Mathf.Abs(horizontalInput) + Mathf.Abs(verticalInput));
         animatorManager.UpdateAnimatorValues(0,moveAmount);
+    }
+
+    private void HandleJumpingInput()
+    {
+        if (jumpInput)
+        {
+            jumpInput = false;
+            playerLocomotion.HandleJumping();
+        }
     }
 }
