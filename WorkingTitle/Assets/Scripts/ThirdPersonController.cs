@@ -182,7 +182,7 @@ namespace StarterAssets
             _hasAnimator = TryGetComponent(out _animator);
             _playerActions?.Invoke();
             //if(Input.GetKeyDown(KeyCode.E)) { PerformRopeClimb(); }
-           
+
             //JumpAndGravity();
             //GroundedCheck();
             //Move();
@@ -245,6 +245,8 @@ namespace StarterAssets
         
         private void Move()
         {
+        
+            Debug.DrawRay(transform.position, transform.forward,Color.cyan);
             if (_canMove)
             {
                 if (!_ropeClimb)
@@ -365,6 +367,7 @@ namespace StarterAssets
             }
             else
             {
+                WallJump();
                 // reset the jump timeout timer
                 _jumpTimeoutDelta = JumpTimeout;
                 if (_input.inputActions.Player.Jump.WasPressedThisFrame() && jumpCount>0)
@@ -495,8 +498,27 @@ namespace StarterAssets
             //_animator.applyRootMotion = false;
             //_playerCanRoll = true;
         }
+        [SerializeField] Vector3 _wallJumpValue;
+        public void WallJump()
+        {
+            if( CanWalJump()) 
+            {
 
-
+                _controller.Move(_wallJumpValue);
+            }
+        }
+        public bool CanWalJump()
+        {
+            if(Physics.Raycast(transform.position,transform.forward+Vector3.up,out RaycastHit hit))
+            {
+                Debug.Log(hit.transform.gameObject.name);
+                if(hit.collider.gameObject.layer==9)
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
         ///this is for sword attact detection
         public void SwordEnable()
         {

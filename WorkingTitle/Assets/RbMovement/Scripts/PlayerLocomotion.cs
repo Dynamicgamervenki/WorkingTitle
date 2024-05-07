@@ -149,6 +149,4 @@ public class PlayerLocomotion : MonoBehaviour
             rb.velocity = playerVelocity;
         }
     }
-
-
 }
