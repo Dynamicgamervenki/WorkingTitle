@@ -24,7 +24,7 @@ public class SpiderWalkStateBehaviour : StateMachineBehaviour
             if (Vector3.Distance(animator.transform.position, temp.position) > Distancebtw)
             {
                 //Debug.LogError(Vector3.Distance(animator.transform.position, temp.position));
-                agent.SetDestination(temp.position);
+                agent.SetDestination(temp.position+Vector3.one);
             }
             else
             {
