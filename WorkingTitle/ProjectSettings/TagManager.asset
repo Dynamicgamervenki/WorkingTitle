@@ -8,7 +8,6 @@ TagManager:
   - Ground
   - CinemachineTarget
   - WallJump
-  - Spider
   layers:
   - Default
   - TransparentFX
@@ -19,8 +18,8 @@ TagManager:
   - Wall
   - Player
   - Ground
-  - WallJump
-  - 
+  - Interaction
+  - Rope
   - 
   - 
   - 
