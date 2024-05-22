@@ -6,7 +6,7 @@ public class PlayerManagers : MonoBehaviour
 {
     Animator anim;
     InputManager inputManager;
-    PlayerLocomotion playerLocomotion;
+    public PlayerLocomotion playerLocomotion;
     CameraManager cameraManager;
 
     public bool isInteracting;

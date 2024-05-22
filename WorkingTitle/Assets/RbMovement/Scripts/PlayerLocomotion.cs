@@ -7,6 +7,7 @@ public class PlayerLocomotion : MonoBehaviour
     InputManager inputManager;
     PlayerManagers playerManagers;
     AnimatorManager animatorManager;
+    RopeClimb RopeClimb;
 
     private Vector3 moveDirection;
     private Transform camera;
@@ -36,7 +37,8 @@ public class PlayerLocomotion : MonoBehaviour
     {
         inputManager = GetComponent<InputManager>();
         playerManagers = GetComponent<PlayerManagers>();
-        animatorManager = GetComponent<AnimatorManager>();  
+        animatorManager = GetComponent<AnimatorManager>();
+        RopeClimb=GetComponent<RopeClimb>();
 
         rb = GetComponent<Rigidbody>();
         camera = Camera.main.transform;
