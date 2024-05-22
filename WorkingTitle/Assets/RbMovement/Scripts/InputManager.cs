@@ -16,11 +16,16 @@ public class InputManager : MonoBehaviour
     public float cameraInputX;
     public float cameraInputY;
 
-    private float moveAmount;
+    public float moveAmount;
     public float horizontalInput;
     public float verticalInput;
 
     public bool jumpInput;
+    public bool interaction_Input;
+
+    public bool sprintInput;
+    public bool wallJumpInput;
+    public bool RopeSwingInput;
 
     private void Awake()
     {
@@ -38,6 +43,18 @@ public class InputManager : MonoBehaviour
                 movementInput = ctx.ReadValue<Vector2>();
             };
 
+            playerControls.PlayerActions.Sprint.performed += ctx =>
+            {
+                sprintInput = true;
+            };
+
+
+            playerControls.PlayerActions.Sprint.canceled += ctx =>
+            {
+                sprintInput = false;
+            };
+
+
             playerControls.PlayerMovement.Camera.performed += ctx =>
             {
                 cameraInput = ctx.ReadValue<Vector2>();
@@ -46,6 +63,23 @@ public class InputManager : MonoBehaviour
             playerControls.PlayerMovement.Jump.performed += ctx =>
             {
                 jumpInput = true;
+            };
+
+            playerControls.PlayerMovement.Interaction.performed += ctx =>
+            {
+                interaction_Input = true;   
+            };
+            playerControls.PlayerActions.WallJump.performed += ctx =>
+            {
+                wallJumpInput = true;
+            };
+            playerControls.PlayerActions.RopeSwing.performed += ctx =>
+            {
+                RopeSwingInput = true;
+            };
+            playerControls.PlayerActions.RopeSwing.canceled += ctx =>
+            {
+                RopeSwingInput = false;
             };
         }
         playerControls.Enable();
@@ -58,21 +92,54 @@ public class InputManager : MonoBehaviour
 
     public void HandleAllInputs()
     {
-        // for calling all the functions , this function itself is called in Update function Nigga
+        // for calling all the functions , this function itself is called in Update function ;
         HandleMovementInput();
+        HandleSprintingInput();
+        HandleRopeSwingInput();
         HandleJumpingInput();
+        HandleInteraction();
     }
 
     private void HandleMovementInput()
     {
-        horizontalInput = movementInput.x;
-        verticalInput = movementInput.y;
+        if (playerLocomotion.rope_climbing)
+        {
+            if (!playerLocomotion.rope_climbing)
+                return;
 
-        cameraInputX = cameraInput.x;
-        cameraInputY = cameraInput.y;
+            horizontalInput = movementInput.x;
+            verticalInput = movementInput.y;
 
-        moveAmount = Mathf.Clamp01(Mathf.Abs(horizontalInput) + Mathf.Abs(verticalInput));
-        animatorManager.UpdateAnimatorValues(0,moveAmount);
+            cameraInputX = cameraInput.x;
+            cameraInputY = cameraInput.y;
+
+            animatorManager.UpdateAnimatorValues(0, Mathf.Clamp(verticalInput, -1f, 1f), playerLocomotion.is_sprinting);
+        }
+        else
+        {
+            horizontalInput = movementInput.x;
+            verticalInput = movementInput.y;
+
+            cameraInputX = cameraInput.x;
+            cameraInputY = cameraInput.y;
+
+            moveAmount = Mathf.Clamp01(Mathf.Abs(horizontalInput) + Mathf.Abs(verticalInput));
+            animatorManager.UpdateAnimatorValues(0, moveAmount, playerLocomotion.is_sprinting);
+        }
+        
+    }
+
+
+    private void HandleSprintingInput()
+    {
+        if(sprintInput && moveAmount > 0.5f)
+        {
+            playerLocomotion.is_sprinting = true;
+        }
+        else
+        {
+            playerLocomotion.is_sprinting = false;
+        }
     }
 
     private void HandleJumpingInput()
@@ -83,4 +150,36 @@ public class InputManager : MonoBehaviour
             playerLocomotion.HandleJumping();
         }
     }
+
+    private void HandleInteraction()
+    {
+        if(interaction_Input)
+        {
+            interaction_Input = false;
+            playerLocomotion.HandlePushAndPull();
+        }
+    }
+
+    public void HandleWallJumpInput()
+    {
+        if(wallJumpInput)
+        {
+            wallJumpInput = false;
+            playerLocomotion.is_wallSliding = false;
+            playerLocomotion.HandleWallJump();
+        }
+    }
+
+    public void HandleRopeSwingInput()
+    {
+        if(RopeSwingInput && playerLocomotion.rope_climbing)
+        {
+            playerLocomotion.rope_swinging = true;
+        }
+        else
+        {
+            playerLocomotion.rope_swinging = false;
+        }
+    }
+
 }

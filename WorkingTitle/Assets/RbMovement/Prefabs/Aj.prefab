@@ -887,9 +887,9 @@ GameObject:
   - component: {fileID: 2245773269882651021}
   - component: {fileID: 3047126551974822913}
   - component: {fileID: 3407214938197297058}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Aj
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -904,8 +904,8 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: -9.360874, y: 0.082336426, z: -19.952652}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
+  m_LocalScale: {x: 0.2, y: 0.2, z: 0.2}
+  m_ConstrainProportionsScale: 1
   m_Children:
   - {fileID: 3709279992579984764}
   - {fileID: 6891958767606712359}
@@ -923,7 +923,7 @@ Rigidbody:
   m_GameObject: {fileID: 2535355581544457720}
   serializedVersion: 4
   m_Mass: 1
-  m_Drag: 0
+  m_Drag: 0.5
   m_AngularDrag: 0.05
   m_CenterOfMass: {x: 0, y: 0, z: 0}
   m_InertiaTensor: {x: 1, y: 1, z: 1}
@@ -936,7 +936,7 @@ Rigidbody:
     m_Bits: 0
   m_ImplicitCom: 1
   m_ImplicitTensor: 1
-  m_UseGravity: 1
+  m_UseGravity: 0
   m_IsKinematic: 0
   m_Interpolate: 1
   m_Constraints: 112
@@ -961,9 +961,9 @@ CapsuleCollider:
   m_Enabled: 1
   serializedVersion: 2
   m_Radius: 0.3
-  m_Height: 1.5714166
+  m_Height: 1.530241
   m_Direction: 1
-  m_Center: {x: 0, y: 0.7392918, z: 0}
+  m_Center: {x: 0, y: 0.7598798, z: 0}
 --- !u!114 &2263941337457305723
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -977,9 +977,16 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   movementInput: {x: 0, y: 0}
+  cameraInput: {x: 0, y: 0}
+  cameraInputX: 0
+  cameraInputY: 0
   moveAmount: 0
   horizontalInput: 0
   verticalInput: 0
+  jumpInput: 0
+  interaction_Input: 0
+  sprintInput: 0
+  wallJumpInput: 0
 --- !u!114 &601784136525603189
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -992,8 +999,52 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8ff7a5a41bc99b44888dad13db64fa69, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  movementSpeed: 5
-  rotationSpeed: 15
+  RunningSpeed: 2
+  walkingSpeed: 1
+  sprintingSpeed: 4
+  rotationSpeed: 5
+  is_sprinting: 0
+  player_Moving: 0
+  inAirTimer: 0
+  leapingVelocity: 3
+  fallingVelocity: 100
+  groundLayer:
+    serializedVersion: 2
+    m_Bits: 1
+  sphereRadius: 0.2
+  rayCastOffSet: 0.5
+  isGrounded: 0
+  isJumping: 0
+  gravityIntensity: -3
+  jumpHeight: 3
+  jumpsPerformed: 0
+  interactionMask:
+    serializedVersion: 2
+    m_Bits: 512
+  interacting: 0
+  interactionSphereCast: {fileID: 4928892716144552234}
+  pushSpeed: 0.5
+  SphereCastRope: {fileID: 6891958767606712359}
+  ropeDetectionRaidus: 0.1
+  ropeClimbingSpeed: 0.5
+  ropeMask:
+    serializedVersion: 2
+    m_Bits: 1024
+  groundMask:
+    serializedVersion: 2
+    m_Bits: 256
+  rope_climbing: 0
+  maxDistance: 0.2
+  playerTryingToGround: 0
+  rope_swinging: 0
+  wallMask:
+    serializedVersion: 2
+    m_Bits: 64
+  WallMaxDistance: 2
+  playerOnRightWall: 0
+  yOffset: 0.5
+  hitRightWall: 0
+  hitLeftWall: 0
 --- !u!114 &2245773269882651021
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1006,6 +1057,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c2179d73ec55a5c44b4f1f46944bc58e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  isInteracting: 0
 --- !u!95 &3047126551974822913
 Animator:
   serializedVersion: 5
@@ -1039,6 +1091,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a085d4907c497f24dbaf27ef104109ee, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  anim: {fileID: 0}
 --- !u!1 &2663105422814226391
 GameObject:
   m_ObjectHideFlags: 0
@@ -3099,7 +3152,7 @@ Transform:
   m_GameObject: {fileID: 8599837637941131056}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -0, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: 1.26, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []

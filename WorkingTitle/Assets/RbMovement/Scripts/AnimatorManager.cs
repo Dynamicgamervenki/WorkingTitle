@@ -8,11 +8,17 @@ public class AnimatorManager : MonoBehaviour
     private int Horizontal;
     private int Vertical;
 
+    private int pushVertical;
+    private int pushHorizontal;
+
+
     private void Awake()
     {
         anim = GetComponent<Animator>();
         Horizontal = Animator.StringToHash("Horizontal");   
         Vertical = Animator.StringToHash("Vertical");
+        pushVertical = Animator.StringToHash("pushVertical");
+        pushHorizontal = Animator.StringToHash("pushHorizontal");
     }
 
     public void PlayTargetAnimations(string targetAnimation , bool isInteracting)
@@ -21,7 +27,7 @@ public class AnimatorManager : MonoBehaviour
         anim.CrossFade(targetAnimation, 0.2f);
     }
 
-    public void UpdateAnimatorValues(float horizontalMovement,float verticalMovement)
+    public void UpdateAnimatorValues(float horizontalMovement,float verticalMovement,bool is_Sprinting)
     {
         //Animation Snapping
         float snappedHorizontal;
@@ -74,6 +80,18 @@ public class AnimatorManager : MonoBehaviour
         }
         #endregion
 
+        if (is_Sprinting)
+        {
+            snappedHorizontal = horizontalMovement;
+            snappedVertical = 2.0f;
+        }
+
+        //if(is_RopeSwinging)
+        //{
+        //    snappedHorizontal = horizontalMovement;
+        //    snappedVertical = 2.0f;
+        //}
+
 
         anim.SetFloat(Horizontal, snappedHorizontal, 0.1f, Time.deltaTime);
         anim.SetFloat(Vertical, snappedVertical, 0.1f, Time.deltaTime);
@@ -81,4 +99,5 @@ public class AnimatorManager : MonoBehaviour
         //anim.SetFloat(Horizontal, Horizontal, 0.1f, Time.deltaTime);
         //anim.SetFloat(Vertical, Vertical, 0.1f, Time.deltaTime);
     }
+
 }
