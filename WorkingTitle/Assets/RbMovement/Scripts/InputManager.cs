@@ -26,6 +26,7 @@ public class InputManager : MonoBehaviour
     public bool sprintInput;
     public bool wallJumpInput;
     public bool RopeSwingInput;
+    public bool crouchInput;
 
     private void Awake()
     {
@@ -81,6 +82,10 @@ public class InputManager : MonoBehaviour
             {
                 RopeSwingInput = false;
             };
+            playerControls.PlayerActions.Crouch.performed += ctx =>
+            {
+                crouchInput = true;
+            };
         }
         playerControls.Enable();
     }
@@ -97,7 +102,7 @@ public class InputManager : MonoBehaviour
         HandleSprintingInput();
         HandleRopeSwingInput();
         HandleJumpingInput();
-        HandleInteraction();
+        HandleCrouchInput();
     }
 
     private void HandleMovementInput()
@@ -126,7 +131,20 @@ public class InputManager : MonoBehaviour
             moveAmount = Mathf.Clamp01(Mathf.Abs(horizontalInput) + Mathf.Abs(verticalInput));
             animatorManager.UpdateAnimatorValues(0, moveAmount, playerLocomotion.is_sprinting);
         }
-        
+
+        if (playerLocomotion.isPlayerCrouching)
+        {
+
+            horizontalInput = movementInput.x;
+            verticalInput = movementInput.y;
+
+            cameraInputX = cameraInput.x;
+            cameraInputY = cameraInput.y;
+
+         //   animatorManager.UpdateAnimatorValues(Mathf.Clamp(horizontalInput, -1f, 1f), Mathf.Clamp(verticalInput, -1f, 1f), playerLocomotion.is_sprinting);
+         animatorManager.UpdateAnimatorValues(horizontalInput,verticalInput,playerLocomotion.is_sprinting); 
+        }
+
     }
 
 
@@ -151,7 +169,7 @@ public class InputManager : MonoBehaviour
         }
     }
 
-    private void HandleInteraction()
+    public void HandlePullAndPushInputs()
     {
         if(interaction_Input)
         {
@@ -172,13 +190,22 @@ public class InputManager : MonoBehaviour
 
     public void HandleRopeSwingInput()
     {
-        if(RopeSwingInput && playerLocomotion.rope_climbing)
+        if(RopeSwingInput)
         {
             playerLocomotion.rope_swinging = true;
         }
         else
         {
             playerLocomotion.rope_swinging = false;
+        }
+    }
+
+    public void HandleCrouchInput()
+    {
+        if(crouchInput)
+        {
+            crouchInput = false;
+            playerLocomotion.HandleCrouchMovement();
         }
     }
 

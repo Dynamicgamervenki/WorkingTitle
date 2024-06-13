@@ -1,5 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Net;
+
 //using System.Numerics;
 using System.Runtime.CompilerServices;
 using Unity.Profiling;
@@ -24,6 +26,7 @@ public class PlayerLocomotion : MonoBehaviour
     [SerializeField] private float walkingSpeed = 1.5f;
     [SerializeField] private float sprintingSpeed = 7.0f;
     [SerializeField] private float rotationSpeed = 10.0f;
+    public LayerMask playerMask;
     public bool is_sprinting;
 
     public bool player_Moving;
@@ -36,6 +39,7 @@ public class PlayerLocomotion : MonoBehaviour
     public float sphereRadius = 0.2f;
     public float rayCastOffSet = 0.5f;
     public bool isGrounded;
+    Vector3 RaycastOrigin;
 
     [Header("Jumping")]
     public bool isJumping;
@@ -44,7 +48,7 @@ public class PlayerLocomotion : MonoBehaviour
     public int jumpsPerformed = 0;
 
     [Header("PushAndPull")]
-    public LayerMask interactionMask;
+    public LayerMask PullAndPushMask;
     public bool isPushingOrPulling = false;
     public Transform interactionSphereCast;
     GameObject hitObject;
@@ -61,6 +65,7 @@ public class PlayerLocomotion : MonoBehaviour
     public bool playerTryingToGround;
     public bool rope_swinging = false;
     public GameObject RopeRigid;
+    public Transform ropeEnd;
 
     [Header("Wall Jump")]
     public LayerMask wallMask;
@@ -72,6 +77,13 @@ public class PlayerLocomotion : MonoBehaviour
     private RaycastHit WallHit;
     public float slidingVelocity = 2.0f;
     public float inAirTime;
+    public LayerMask swingMask;
+    public float swingRadius;
+    public bool swing;
+
+    [Header("Crouching")]
+    public bool isPlayerCrouching;
+    public float crouchWalkSpeed = 1.0f;
 
 
     private void Awake()
@@ -88,6 +100,8 @@ public class PlayerLocomotion : MonoBehaviour
     {
         HandleWallJumpDetection();
         inputManager.HandleWallJumpInput();
+        inputManager.HandlePullAndPushInputs();
+        HandleRopeSwing();
         HandleRopeClimbing();
         HandleFallingAndLanding();
 
@@ -103,6 +117,9 @@ public class PlayerLocomotion : MonoBehaviour
         if (isJumping)
             return;
 
+        if(swing)
+            return;
+
         if (isPushingOrPulling)
         {
             moveDirection = camera.forward * Mathf.Clamp(inputManager.verticalInput, 0f, 1f);
@@ -112,7 +129,7 @@ public class PlayerLocomotion : MonoBehaviour
             if (inputManager.verticalInput < 0 || inputManager.horizontalInput != 0)
             {
                 isPushingOrPulling = false;
-                hitObject.transform.SetParent(null);
+               // hitObject.transform.SetParent(null);
                 animatorManager.anim.SetBool("isPushing", false);
             }
         }
@@ -129,9 +146,21 @@ public class PlayerLocomotion : MonoBehaviour
             moveDirection.Normalize();
             moveDirection.y = 0f;
 
-            if(is_sprinting && !rope_climbing)
+            if(is_sprinting && !rope_climbing && !isPlayerCrouching)
             {
                 moveDirection *= sprintingSpeed;
+            }
+            else if(isPlayerCrouching)
+            {
+                moveDirection *= crouchWalkSpeed;
+            }
+            else if(animatorManager.Balancing)
+            {
+                moveDirection *= 0.5f;
+            }
+            else if(ClimbingOnScale)
+            {
+                moveDirection *= 1.1f;
             }
             else
             {
@@ -153,6 +182,12 @@ public class PlayerLocomotion : MonoBehaviour
             return ;
 
         if(rope_climbing)
+            return;
+
+        if(swing)
+            return ;
+
+        if (isPlayerCrouching)
             return;
 
         Vector3 targetDirection = Vector3.zero;
@@ -178,8 +213,15 @@ public class PlayerLocomotion : MonoBehaviour
         if (rope_climbing)
             return;
 
+        if (swing)
+            return;
+
+        if (isPlayerCrouching)
+            return;
+
+
         RaycastHit hit;
-        Vector3 RaycastOrigin = transform.position;
+        RaycastOrigin = transform.position;
         RaycastOrigin.y = RaycastOrigin.y + rayCastOffSet;
 
         if (!isGrounded && !isJumping && !WallDetected)
@@ -194,12 +236,14 @@ public class PlayerLocomotion : MonoBehaviour
             rb.AddForce(-Vector3.up * fallingVelocity * inAirTimer);
         }
 
-        if (Physics.SphereCast(RaycastOrigin, sphereRadius,Vector3.down, out hit,groundLayer))
+        if (Physics.SphereCast(RaycastOrigin, sphereRadius,-transform.up, out hit,groundLayer))
         {
             if (!isGrounded && !playerManagers.isInteracting)
             {
                 animatorManager.PlayTargetAnimations("Land", true);
             }
+            if(swing)
+             isGrounded = false;
             inAirTimer = 0;
             isGrounded = true;
         }
@@ -207,6 +251,7 @@ public class PlayerLocomotion : MonoBehaviour
         {
             isGrounded = false;
         }
+
 
     }
 
@@ -219,6 +264,29 @@ public class PlayerLocomotion : MonoBehaviour
         if(rope_climbing)
             return;
 
+        if(swing && !rope_swinging)
+            return;
+
+        if(swing)
+        {
+            animatorManager.anim.SetBool("isRopeSwinging", false);
+            swing = false;
+            swingRadius = 0f;
+            transform.SetParent(null);
+            rb.isKinematic = false;
+            rb.useGravity = true;
+            rb.interpolation = RigidbodyInterpolation.Interpolate;
+            
+
+            rb.AddForce(transform.forward * 5.0f, ForceMode.Impulse);
+            Invoke("DetectCollisions", 1.0f);
+
+            this.transform.rotation = Quaternion.Euler(0,180, 0);
+
+            //    rb.AddForce(-Vector3.up * fallingVelocity * inAirTimer);
+
+        }
+
         if (isGrounded || jumpsPerformed < 2)
         {
             if (isGrounded)
@@ -228,8 +296,8 @@ public class PlayerLocomotion : MonoBehaviour
 
             jumpsPerformed++;
 
-            animatorManager.anim.SetBool("isJumping", true);
-            animatorManager.PlayTargetAnimations("Jump", false);
+           animatorManager.anim.SetBool("isJumping", true);
+           animatorManager.PlayTargetAnimations("Jump", false);
 
             float jumpingVelocity = Mathf.Sqrt(-2 * gravityIntensity * jumpHeight);
             Vector3 playerVelocity = moveDirection;
@@ -244,28 +312,33 @@ public class PlayerLocomotion : MonoBehaviour
     public void HandlePushAndPull()
     {
         RaycastHit hit;
-        interactionSphereCast.position = new Vector3(interactionSphereCast.position.x, 0.5f, interactionSphereCast.position.z);
+       // interactionSphereCast.position = new Vector3(interactionSphereCast.position.x, 0.5f, interactionSphereCast.position.z);
 
-        if (Physics.Raycast(transform.position, transform.forward, out hit, 0.5f, interactionMask))
+        if (Physics.Raycast(transform.position + Vector3.up * 0.3f, transform.forward, out hit, 0.5f, PullAndPushMask))
         {
-             hitObject = hit.transform.gameObject;
+            // hitObject = hit.transform.gameObject;
+            hit.transform.GetComponent<Rigidbody>().constraints = RigidbodyConstraints.None;
+            hit.transform.GetComponent<Rigidbody>().constraints = RigidbodyConstraints.FreezeRotationX;
+            hit.transform.GetComponent<Rigidbody>().constraints = RigidbodyConstraints.FreezeRotationY;
             if (!isPushingOrPulling)
             {
                     isPushingOrPulling = true;
-                    hitObject = hit.transform.gameObject;
-                    hitObject.transform.SetParent(transform);
+                    rb.AddForce(transform.forward * 2.0f, ForceMode.Force);
+                   // hitObject = hit.transform.gameObject;
+                  //  hitObject.transform.SetParent(transform);
                     animatorManager.anim.SetBool("isPushing", true);
             }
             else if(isPushingOrPulling)
             {
                 Debug.Log("TRYING TO UNPARENT");
                 isPushingOrPulling = false;
-                hitObject.transform.SetParent(null);
+                //hitObject.transform.SetParent(null);
                 animatorManager.anim.SetBool("isPushing", false);
             }
         }
         else
         {
+            //animatorManager.anim.SetBool("isPushing", false);
             return;
         } 
     }
@@ -276,7 +349,6 @@ public class PlayerLocomotion : MonoBehaviour
         {
             Debug.Log("rope found !"); isGrounded = true;
             rope_climbing = true;
-            transform.SetParent(hit.transform);
             animatorManager.anim.SetBool("isRopeClimbing", true);
             rb.velocity = Vector3.zero;
             rb.useGravity = false;
@@ -284,12 +356,12 @@ public class PlayerLocomotion : MonoBehaviour
         else
         {
             rope_climbing = false;
-            transform.SetParent(null);
             animatorManager.anim.SetBool("isRopeClimbing", false);
-           // rb.useGravity = true;
+            //animatorManager.PlayTargetAnimations("Falling",false);
+            //rb.useGravity = true;
         }
 
-        if ( rope_climbing && Physics.Raycast(transform.position, -transform.up, out RaycastHit hit1, 0.5f, groundMask))
+        if (rope_climbing && Physics.Raycast(transform.position, -transform.up, out RaycastHit hit1, 0.5f, groundMask))
         {
             playerTryingToGround = true;
         }
@@ -301,10 +373,53 @@ public class PlayerLocomotion : MonoBehaviour
         if (rope_climbing && playerTryingToGround && inputManager.verticalInput < 0)
         {
             rope_climbing = false;
-            transform.SetParent(null);
+            rb.detectCollisions = false;
             animatorManager.PlayTargetAnimations("Falling", true);
+            rb.AddForce(Vector3.down * 2.0f, ForceMode.Acceleration);
             rb.useGravity = true;
+            rb.detectCollisions = true;
         }
+    }
+
+    public void HandleRopeSwing()
+    {
+
+        Collider[] colliders = (Physics.OverlapSphere(RopeRigid.transform.position,swingRadius));
+
+        foreach (Collider collider in colliders)
+        {
+            if(collider.tag == "Player")
+            {
+                swing = true;
+                rb.interpolation = RigidbodyInterpolation.None;
+                rb.collisionDetectionMode = CollisionDetectionMode.Discrete;
+            }
+        }
+
+        if(swing)
+        {
+            Debug.Log("swing"); 
+            rb.useGravity = false;
+            rb.isKinematic = true;
+             rb.detectCollisions = false;
+            transform.SetParent(RopeRigid.transform.GetChild(0).transform.GetChild(0).transform);
+            animatorManager.anim.SetBool("isRopeSwinging", true);
+            //animatorManager.PlayTargetAnimations("RopeSwing", true);
+
+            if (rope_swinging)
+            {
+                Debug.Log("init mate");
+                RopeRigid.GetComponent<Rigidbody>().AddForce(transform.forward * inputManager.verticalInput * 20f/*,ForceMode.Acceleration*/);
+                RopeRigid.GetComponent<Rigidbody>().AddForce(transform.right * inputManager.horizontalInput * 20f/*,ForceMode.Acceleration*/);
+            }
+        }
+        else
+        {
+            rb.isKinematic = false;
+            rb.useGravity = true;
+          //  rb.detectCollisions = true;
+        }
+
     }
 
 
@@ -314,7 +429,7 @@ public class PlayerLocomotion : MonoBehaviour
         if (is_wallSliding)
         {
             inAirTime = 0;
-            inAirTime = inAirTime + Time.time;
+            inAirTime = inAirTime + Time.time;               //time.delta time
 
             rb.AddForce(Vector3.down * inAirTime * slidingVelocity);
         }
@@ -336,8 +451,26 @@ public class PlayerLocomotion : MonoBehaviour
         {
             rb.useGravity = false;
             RotatePlayer(180);
-            transform.position = Vector3.Lerp(transform.position, WallHit.point, 1.0f);
+              transform.position = Vector3.Lerp(transform.position, WallHit.point, 1.0f);
+          //  rb.AddForce(new Vector3(150.0f, 0, 50.0f));
+            //rb.velocity = new  Vector3(150,0,150);
             animatorManager.PlayTargetAnimations("WallJump", false);
+        }
+    }
+
+    public void HandleCrouchMovement()
+    {
+        if(!isPlayerCrouching)
+        {
+            Debug.Log("crouch");
+            isPlayerCrouching = true;   
+            animatorManager.anim.SetBool("isCrouching", true);
+        }
+        else
+        {
+            Debug.Log("Stand Up Nigga");
+            isPlayerCrouching = false;
+            animatorManager.anim.SetBool("isCrouching", false);
         }
     }
 
@@ -347,7 +480,29 @@ public class PlayerLocomotion : MonoBehaviour
         transform.rotation = Quaternion.Lerp(transform.rotation, targetRotation, 1.0f);
     }
 
+    private void DetectCollisions()
+    {
+        rb.detectCollisions = true;
+    }
 
+    bool ClimbingOnScale = false;
+    private void OnCollisionEnter(Collision collision)   
+    {
+        if(collision.gameObject.tag == "Scale")
+        {
+            Debug.Log("wassup my niggger");     //increase movement speed
+             ClimbingOnScale = true;
+        }
+    }
+
+    private void OnCollisionExit(Collision collision) 
+    {
+        if (collision.gameObject.tag == "Scale")
+        {
+            Debug.Log("nah my niggger left");     //increase movement speed
+            ClimbingOnScale = false;
+        }
+    }
 
     private void OnDrawGizmos()
     {
@@ -359,15 +514,18 @@ public class PlayerLocomotion : MonoBehaviour
         Gizmos.color = Color.green;
         Gizmos.DrawWireSphere(transform.position + Vector3.up * 0.3f + transform.forward * maxDistance,ropeDetectionRaidus);
 
-        Gizmos.color = Color.blue;
+        Gizmos.color = Color.blue;                      //playertobeground
         Gizmos.DrawRay(transform.position,-transform.up * 0.5f);
 
-        Gizmos.color = Color.yellow;
-       // Gizmos.DrawWireSphere(transform.position + Vector3.up * yOffset + transform.forward * WallMaxDistance,wallDetectRadius);
 
         Gizmos.DrawRay(transform.position + Vector3.up * yOffset, transform.forward * WallMaxDistance);
-        //Gizmos.color = Color.red;
-        //Gizmos.DrawRay(transform.position + Vector3.up * yOffset, -Vector3.right * WallMaxDistance);
+
+        Gizmos.color = Color.black;     //FOR ROPE REGARDING ROPESWING
+        Gizmos.DrawWireSphere(RopeRigid.transform.position,swingRadius);
+
+        Gizmos.color = Color.green;
+        Gizmos.DrawWireSphere(RaycastOrigin + Vector3.down,sphereRadius);
+        Gizmos.DrawRay(transform.position + Vector3.up * 0.3f,transform.forward * 0.5f);
     }
 
 

@@ -9,7 +9,7 @@ public class AnimatorManager : MonoBehaviour
     private int Vertical;
 
     private int pushVertical;
-    private int pushHorizontal;
+    private int pushHorizontal;                                                         public bool Balancing = false;
 
 
     private void Awake()
