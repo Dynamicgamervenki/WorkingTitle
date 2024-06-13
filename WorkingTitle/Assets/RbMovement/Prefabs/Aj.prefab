@@ -988,6 +988,7 @@ MonoBehaviour:
   sprintInput: 0
   wallJumpInput: 0
   RopeSwingInput: 0
+  crouchInput: 0
 --- !u!114 &601784136525603189
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1000,10 +1001,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8ff7a5a41bc99b44888dad13db64fa69, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  RunningSpeed: 2
-  walkingSpeed: 1
-  sprintingSpeed: 4
+  RunningSpeed: 0.5
+  walkingSpeed: 0.9
+  sprintingSpeed: 2
   rotationSpeed: 5
+  playerMask:
+    serializedVersion: 2
+    m_Bits: 128
   is_sprinting: 0
   player_Moving: 0
   inAirTimer: 0
@@ -1019,12 +1023,12 @@ MonoBehaviour:
   gravityIntensity: -3
   jumpHeight: 3
   jumpsPerformed: 0
-  interactionMask:
+  PullAndPushMask:
     serializedVersion: 2
     m_Bits: 512
   isPushingOrPulling: 0
   interactionSphereCast: {fileID: 4928892716144552234}
-  pushSpeed: 0.5
+  pushSpeed: 1.5
   SphereCastRope: {fileID: 6891958767606712359}
   ropeDetectionRaidus: 0.1
   ropeClimbingSpeed: 0.3
@@ -1033,12 +1037,13 @@ MonoBehaviour:
     m_Bits: 1024
   groundMask:
     serializedVersion: 2
-    m_Bits: 320
+    m_Bits: 257
   rope_climbing: 0
   maxDistance: 0.2
   playerTryingToGround: 0
   rope_swinging: 0
   RopeRigid: {fileID: 0}
+  ropeEnd: {fileID: 0}
   wallMask:
     serializedVersion: 2
     m_Bits: 64
@@ -1054,6 +1059,8 @@ MonoBehaviour:
     m_Bits: 2048
   swingRadius: 0.5
   swing: 0
+  isPlayerCrouching: 0
+  crouchWalkSpeed: 0.5
 --- !u!114 &2245773269882651021
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1101,6 +1108,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   anim: {fileID: 0}
+  Balancing: 0
 --- !u!1 &2663105422814226391
 GameObject:
   m_ObjectHideFlags: 0
@@ -3161,7 +3169,7 @@ Transform:
   m_GameObject: {fileID: 8599837637941131056}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0.68000007, z: 0}
+  m_LocalPosition: {x: 0, y: -18.900002, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
