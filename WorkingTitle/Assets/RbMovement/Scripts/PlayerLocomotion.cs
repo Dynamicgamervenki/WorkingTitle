@@ -1,3 +1,4 @@
+using JetBrains.Annotations;
 using System.Collections;
 using System.Collections.Generic;
 using System.Net;
@@ -98,12 +99,14 @@ public class PlayerLocomotion : MonoBehaviour
 
     public void HandleAllMovements()    //reagrding rigidbody ,will be called in fixed update
     {
+        HandleFallingAndLanding();
+
         HandleWallJumpDetection();
         inputManager.HandleWallJumpInput();
         inputManager.HandlePullAndPushInputs();
         HandleRopeSwing();
         HandleRopeClimbing();
-        HandleFallingAndLanding();
+
 
         if (playerManagers.isInteracting)
             return;
@@ -208,6 +211,7 @@ public class PlayerLocomotion : MonoBehaviour
         transform.rotation = playerRotation;
     }
 
+    public Transform GroundCheck;
     private void HandleFallingAndLanding()
     {
         if (rope_climbing)
@@ -226,9 +230,9 @@ public class PlayerLocomotion : MonoBehaviour
 
         if (!isGrounded && !isJumping && !WallDetected)
         {
-            if (!playerManagers.isInteracting || !rope_climbing /*|| !WallDetected*/)
+            if (!playerManagers.isInteracting /*|| !rope_climbing*/)
             {
-                animatorManager.PlayTargetAnimations("Falling", true);
+                    animatorManager.PlayTargetAnimations("Falling", true);
             }
 
             inAirTimer = inAirTimer + Time.deltaTime;
@@ -236,14 +240,14 @@ public class PlayerLocomotion : MonoBehaviour
             rb.AddForce(-Vector3.up * fallingVelocity * inAirTimer);
         }
 
-        if (Physics.SphereCast(RaycastOrigin, sphereRadius,-transform.up, out hit,groundLayer))
+        if (Physics.SphereCast(GroundCheck.position, sphereRadius,-Vector3.up, out hit,1.0f,groundLayer))
         {
             if (!isGrounded && !playerManagers.isInteracting)
             {
-                animatorManager.PlayTargetAnimations("Land", true);
+                      animatorManager.PlayTargetAnimations("Landing", true);
             }
-            if(swing)
-             isGrounded = false;
+           // if(swing)
+           //  isGrounded = false;
             inAirTimer = 0;
             isGrounded = true;
         }
@@ -266,6 +270,7 @@ public class PlayerLocomotion : MonoBehaviour
 
         if(swing && !rope_swinging)
             return;
+
 
         if(swing)
         {
@@ -296,14 +301,26 @@ public class PlayerLocomotion : MonoBehaviour
 
             jumpsPerformed++;
 
-           animatorManager.anim.SetBool("isJumping", true);
-           animatorManager.PlayTargetAnimations("Jump", false);
+            animatorManager.anim.SetBool("isJumping", true);
+            animatorManager.PlayTargetAnimations("Jump", true);
 
             float jumpingVelocity = Mathf.Sqrt(-2 * gravityIntensity * jumpHeight);
             Vector3 playerVelocity = moveDirection;
             playerVelocity.y = jumpingVelocity;
             rb.velocity = playerVelocity;
         }
+
+        //if(isGrounded)                        // for single jump.
+        //{
+        //    animatorManager.anim.SetBool("isJumping", true); 
+        //    animatorManager.PlayTargetAnimations("Jump", false);
+
+        //    float jumpingVelocity = Mathf.Sqrt(-2 * gravityIntensity * jumpHeight);
+        //    Vector3 playerVelocity = moveDirection;
+        //    playerVelocity.y = jumpingVelocity;
+        //    rb.velocity = playerVelocity;
+
+        //}
 
     }
 
@@ -526,6 +543,9 @@ public class PlayerLocomotion : MonoBehaviour
         Gizmos.color = Color.green;
         Gizmos.DrawWireSphere(RaycastOrigin + Vector3.down,sphereRadius);
         Gizmos.DrawRay(transform.position + Vector3.up * 0.3f,transform.forward * 0.5f);
+
+        Gizmos.color = Color.gray;
+        Gizmos.DrawWireSphere(GroundCheck.position + (-Vector3.up) * 1.0f,sphereRadius);
     }
 
 

@@ -7,9 +7,7 @@ public class AnimatorManager : MonoBehaviour
     public Animator anim;
     private int Horizontal;
     private int Vertical;
-
-    private int pushVertical;
-    private int pushHorizontal;                                                         public bool Balancing = false;
+                                                       public bool Balancing = false;
 
 
     private void Awake()
@@ -17,8 +15,6 @@ public class AnimatorManager : MonoBehaviour
         anim = GetComponent<Animator>();
         Horizontal = Animator.StringToHash("Horizontal");   
         Vertical = Animator.StringToHash("Vertical");
-        pushVertical = Animator.StringToHash("pushVertical");
-        pushHorizontal = Animator.StringToHash("pushHorizontal");
     }
 
     public void PlayTargetAnimations(string targetAnimation , bool isInteracting)
