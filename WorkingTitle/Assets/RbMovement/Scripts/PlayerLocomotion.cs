@@ -19,7 +19,7 @@ public class PlayerLocomotion : MonoBehaviour
 
     private Vector3 moveDirection;
     private Transform camera;
-    private Rigidbody rb;
+    public Rigidbody rb;
 
 
     [Header("Movemnt")]
@@ -40,6 +40,7 @@ public class PlayerLocomotion : MonoBehaviour
     public float sphereRadius = 0.2f;
     public float rayCastOffSet = 0.5f;
     public bool isGrounded;
+    public Transform GroundCheck;
     Vector3 RaycastOrigin;
 
     [Header("Jumping")]
@@ -67,6 +68,7 @@ public class PlayerLocomotion : MonoBehaviour
     public bool rope_swinging = false;
     public GameObject RopeRigid;
     public Transform ropeEnd;
+    public bool climbingCliff =false;
 
     [Header("Wall Jump")]
     public LayerMask wallMask;
@@ -85,6 +87,8 @@ public class PlayerLocomotion : MonoBehaviour
     [Header("Crouching")]
     public bool isPlayerCrouching;
     public float crouchWalkSpeed = 1.0f;
+
+    private bool ClimbingOnScale = false;
 
 
     private void Awake()
@@ -142,6 +146,12 @@ public class PlayerLocomotion : MonoBehaviour
             moveDirection.Normalize();
             moveDirection *= ropeClimbingSpeed;              
         }
+        else if(climbingCliff)
+        {
+            moveDirection = transform.up * inputManager.verticalInput;
+            moveDirection.Normalize();
+            moveDirection *= 10.0f;
+        }
         else
         {
             moveDirection = camera.forward * inputManager.verticalInput;
@@ -193,6 +203,9 @@ public class PlayerLocomotion : MonoBehaviour
         if (isPlayerCrouching)
             return;
 
+        if(isPushingOrPulling)
+            return ;
+
         Vector3 targetDirection = Vector3.zero;
 
         targetDirection = camera.forward * inputManager.verticalInput;
@@ -211,7 +224,6 @@ public class PlayerLocomotion : MonoBehaviour
         transform.rotation = playerRotation;
     }
 
-    public Transform GroundCheck;
     private void HandleFallingAndLanding()
     {
         if (rope_climbing)
@@ -222,6 +234,9 @@ public class PlayerLocomotion : MonoBehaviour
 
         if (isPlayerCrouching)
             return;
+
+        //if (climbingCliff)
+        //    return ;
 
 
         RaycastHit hit;
@@ -249,7 +264,8 @@ public class PlayerLocomotion : MonoBehaviour
            // if(swing)
            //  isGrounded = false;
             inAirTimer = 0;
-            isGrounded = true;
+            isGrounded = true; 
+            rb.useGravity = true;  climbingCliff = false;
         }
         else
         {
@@ -271,8 +287,11 @@ public class PlayerLocomotion : MonoBehaviour
         if(swing && !rope_swinging)
             return;
 
+        if (isPlayerCrouching)
+            return;
 
-        if(swing)
+
+        if (swing)
         {
             animatorManager.anim.SetBool("isRopeSwinging", false);
             swing = false;
@@ -362,9 +381,12 @@ public class PlayerLocomotion : MonoBehaviour
 
     public void HandleRopeClimbing()
     {
+        if (isGrounded)
+            return;
+        if (climbingCliff)
+            return;
         if (Physics.SphereCast(transform.position + Vector3.up * 0.3f, ropeDetectionRaidus, transform.forward, out RaycastHit hit, maxDistance, ropeMask))
         {
-            Debug.Log("rope found !"); isGrounded = true;
             rope_climbing = true;
             animatorManager.anim.SetBool("isRopeClimbing", true);
             rb.velocity = Vector3.zero;
@@ -374,27 +396,6 @@ public class PlayerLocomotion : MonoBehaviour
         {
             rope_climbing = false;
             animatorManager.anim.SetBool("isRopeClimbing", false);
-            //animatorManager.PlayTargetAnimations("Falling",false);
-            //rb.useGravity = true;
-        }
-
-        if (rope_climbing && Physics.Raycast(transform.position, -transform.up, out RaycastHit hit1, 0.5f, groundMask))
-        {
-            playerTryingToGround = true;
-        }
-        else
-        {
-            playerTryingToGround = false;
-        }
-
-        if (rope_climbing && playerTryingToGround && inputManager.verticalInput < 0)
-        {
-            rope_climbing = false;
-            rb.detectCollisions = false;
-            animatorManager.PlayTargetAnimations("Falling", true);
-            rb.AddForce(Vector3.down * 2.0f, ForceMode.Acceleration);
-            rb.useGravity = true;
-            rb.detectCollisions = true;
         }
     }
 
@@ -502,12 +503,11 @@ public class PlayerLocomotion : MonoBehaviour
         rb.detectCollisions = true;
     }
 
-    bool ClimbingOnScale = false;
+
     private void OnCollisionEnter(Collision collision)   
     {
         if(collision.gameObject.tag == "Scale")
         {
-            Debug.Log("wassup my niggger");     //increase movement speed
              ClimbingOnScale = true;
         }
     }
@@ -516,7 +516,6 @@ public class PlayerLocomotion : MonoBehaviour
     {
         if (collision.gameObject.tag == "Scale")
         {
-            Debug.Log("nah my niggger left");     //increase movement speed
             ClimbingOnScale = false;
         }
     }
