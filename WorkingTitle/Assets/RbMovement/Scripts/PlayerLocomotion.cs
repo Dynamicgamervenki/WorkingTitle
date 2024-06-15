@@ -67,8 +67,8 @@ public class PlayerLocomotion : MonoBehaviour
     public bool playerTryingToGround;
     public bool rope_swinging = false;
     public GameObject RopeRigid;
-    public Transform ropeEnd;
     public bool climbingCliff =false;
+    public Transform ClimbPoint;
 
     [Header("Wall Jump")]
     public LayerMask wallMask;
@@ -127,6 +127,7 @@ public class PlayerLocomotion : MonoBehaviour
         if(swing)
             return;
 
+
         if (isPushingOrPulling)
         {
             moveDirection = camera.forward * Mathf.Clamp(inputManager.verticalInput, 0f, 1f);
@@ -146,12 +147,12 @@ public class PlayerLocomotion : MonoBehaviour
             moveDirection.Normalize();
             moveDirection *= ropeClimbingSpeed;              
         }
-        else if(climbingCliff)
-        {
-            moveDirection = transform.up * inputManager.verticalInput;
-            moveDirection.Normalize();
-            moveDirection *= 10.0f;
-        }
+        //else if(climbingCliff)
+        //{
+        //    moveDirection = transform.up * inputManager.verticalInput;
+        //    moveDirection.Normalize();
+        //    moveDirection *= 10.0f;
+        //}
         else
         {
             moveDirection = camera.forward * inputManager.verticalInput;
@@ -265,7 +266,7 @@ public class PlayerLocomotion : MonoBehaviour
            //  isGrounded = false;
             inAirTimer = 0;
             isGrounded = true; 
-            rb.useGravity = true;  climbingCliff = false;
+            rb.useGravity = true;  /*climbingCliff = false;*/
         }
         else
         {
@@ -275,7 +276,23 @@ public class PlayerLocomotion : MonoBehaviour
 
     }
 
+    public void HandleEvent()
+    {
+        Debug.Log("reached !");
+        ClimbPoint.transform.GetComponentInParent<BoxCollider>().isTrigger = false;
+   //     climbingCliff = false;
+        animatorManager.anim.SetBool("Climbing",false);
+        Quaternion targetRotation = Quaternion.Euler(0, -0, -0);
+        transform.position = Vector3.Lerp(transform.position,ClimbPoint.transform.position,1.0f * Time.deltaTime);
+        //Time.timeScale = 0;
 
+        // transform.position = Vector3.Lerp(transform.position, ClimbPoint.position, 1.0f);
+
+        //    Time.timeScale = 0;
+        //transform.position = new Vector3(0.674892f,transform.position.y,transform.position.z);
+        //   animatorManager.anim.SetBool("Climbing",false);
+        //transform.position += transform.up + transform.forward * 0.5f;
+    }
     public void HandleJumping()
     {
         if (WallDetected)
@@ -383,8 +400,7 @@ public class PlayerLocomotion : MonoBehaviour
     {
         if (isGrounded)
             return;
-        if (climbingCliff)
-            return;
+
         if (Physics.SphereCast(transform.position + Vector3.up * 0.3f, ropeDetectionRaidus, transform.forward, out RaycastHit hit, maxDistance, ropeMask))
         {
             rope_climbing = true;

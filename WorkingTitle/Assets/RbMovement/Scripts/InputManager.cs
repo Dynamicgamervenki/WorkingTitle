@@ -118,7 +118,7 @@ public class InputManager : MonoBehaviour
             cameraInputX = cameraInput.x;
             cameraInputY = cameraInput.y;
 
-            animatorManager.UpdateAnimatorValues(0, Mathf.Clamp(verticalInput, -1f, 1f), playerLocomotion.is_sprinting,playerLocomotion.climbingCliff);
+            animatorManager.UpdateAnimatorValues(0, Mathf.Clamp(verticalInput, -1f, 1f), playerLocomotion.is_sprinting);
         }
         else
         {
@@ -129,7 +129,7 @@ public class InputManager : MonoBehaviour
             cameraInputY = cameraInput.y;
 
             moveAmount = Mathf.Clamp01(Mathf.Abs(horizontalInput) + Mathf.Abs(verticalInput));
-            animatorManager.UpdateAnimatorValues(0, moveAmount, playerLocomotion.is_sprinting,playerLocomotion.climbingCliff);
+            animatorManager.UpdateAnimatorValues(0, moveAmount, playerLocomotion.is_sprinting);
         }
 
         if (playerLocomotion.isPlayerCrouching)
@@ -142,7 +142,7 @@ public class InputManager : MonoBehaviour
             cameraInputY = cameraInput.y;
 
          //   animatorManager.UpdateAnimatorValues(Mathf.Clamp(horizontalInput, -1f, 1f), Mathf.Clamp(verticalInput, -1f, 1f), playerLocomotion.is_sprinting);
-         animatorManager.UpdateAnimatorValues(horizontalInput,verticalInput,playerLocomotion.is_sprinting, playerLocomotion.climbingCliff); 
+         animatorManager.UpdateAnimatorValues(horizontalInput,verticalInput,playerLocomotion.is_sprinting); 
         }
 
     }

@@ -23,7 +23,7 @@ public class AnimatorManager : MonoBehaviour
         anim.CrossFade(targetAnimation, 0.2f);
     }
 
-    public void UpdateAnimatorValues(float horizontalMovement,float verticalMovement,bool is_Sprinting,bool climbingCliff)
+    public void UpdateAnimatorValues(float horizontalMovement,float verticalMovement,bool is_Sprinting)
     {
         //Animation Snapping
         float snappedHorizontal;
@@ -79,11 +79,6 @@ public class AnimatorManager : MonoBehaviour
         if (is_Sprinting)
         {
             snappedHorizontal = horizontalMovement;
-            snappedVertical = 2.0f;
-        }
-
-        if(climbingCliff)
-        {
             snappedVertical = 2.0f;
         }
 
