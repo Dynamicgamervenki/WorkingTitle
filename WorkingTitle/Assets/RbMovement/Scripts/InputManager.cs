@@ -90,7 +90,7 @@ public class InputManager : MonoBehaviour
         playerControls.Enable();
     }
 
-    private void OnDisable()
+    public void OnDisable()
     {
         playerControls.Disable();
     }

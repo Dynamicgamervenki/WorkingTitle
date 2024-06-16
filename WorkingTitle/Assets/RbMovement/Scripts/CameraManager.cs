@@ -34,6 +34,9 @@ public class CameraManager : MonoBehaviour
         targetTransform = FindObjectOfType<PlayerManagers>().transform;
         cameraTransform = Camera.main.transform;
         defaultPosition = cameraTransform.localPosition.z;
+
+        Cursor.visible = false;
+        Cursor.lockState = CursorLockMode.Locked;
     }
 
     private void FollowTarget()
