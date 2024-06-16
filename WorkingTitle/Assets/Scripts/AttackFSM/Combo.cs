@@ -19,7 +19,7 @@ public class Combo : StateMachineBehaviour
     // OnStateUpdate is called on each Update frame between OnStateEnter and OnStateExit callbacks
     override public void OnStateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
-        if (PlayerManager.Instance._StarterAssetsInputsInstance.inputActions.Player.Fire1.WasPressedThisFrame() && stateInfo.normalizedTime> _keyFrameMin && stateInfo.normalizedTime < _keyFrameMax && _canReciveInput)
+        if (Input.GetKeyDown(KeyCode.Mouse0)) /*&& stateInfo.normalizedTime> _keyFrameMin && stateInfo.normalizedTime < _keyFrameMax && _canReciveInput)*/
         {
             
             _canReciveInput=false;

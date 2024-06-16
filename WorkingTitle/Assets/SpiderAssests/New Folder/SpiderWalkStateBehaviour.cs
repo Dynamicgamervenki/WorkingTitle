@@ -6,38 +6,48 @@ using UnityEngine.AI;
 public class SpiderWalkStateBehaviour : StateMachineBehaviour
 {
     // OnStateEnter is called when a transition starts and the state machine starts to evaluate this state
-    private NavMeshAgent agent;
-    public float Distancebtw;
-    Transform temp;
+    EnemyBehaviour behaviour;
     override public void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
-        agent=animator.GetComponent<NavMeshAgent>();
-        temp = animator.GetComponent<SpiderScripts>().PlayerRef;
-       
-    }
+        if(behaviour==null&&animator.TryGetComponent(out EnemyBehaviour enemy))
+        {
+            behaviour = enemy;
+        }
+        behaviour.agent.isStopped = false;
 
+    }
     // OnStateUpdate is called on each Update frame between OnStateEnter and OnStateExit callbacks
     override public void OnStateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
-        if (temp != null)
+        //if (temp != null)
+        //{
+        //    if ()
+        //    {
+        //        //Debug.LogError(Vector3.Distance(animator.transform.position, temp.position));
+        //        agent.SetDestination(temp.position+Vector3.one);
+        //    }
+        //    else
+        //    {
+        //        agent.SetDestination(animator.transform.position);
+        //        animator.SetTrigger("Attack");
+        //    }
+        //}
+        Debug.LogError(behaviour.ReturnDistance() > behaviour.JumpDistance);
+        Debug.LogError(behaviour.ReturnDistance() );
+        if(behaviour.ReturnDistance() < behaviour.JumpDistance)
         {
-            if (Vector3.Distance(animator.transform.position, temp.position) > Distancebtw)
-            {
-                //Debug.LogError(Vector3.Distance(animator.transform.position, temp.position));
-                agent.SetDestination(temp.position+Vector3.one);
-            }
-            else
-            {
-                agent.SetDestination(animator.transform.position);
-                animator.SetTrigger("Attack");
-            }
+            animator.SetTrigger("Jump");
         }
+        behaviour.agent.SetDestination(behaviour.playerREF.position);
+        behaviour.EnemyLookAtPlayer();
+        animator.SetBool("Walk", behaviour.ReturnDistance() > behaviour.attackDistance);
+
     }
 
     // OnStateExit is called when a transition ends and the state machine finishes evaluating this state
     override public void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
-        animator.SetBool("Walk", false);
+        
     }
 
     // OnStateMove is called right after Animator.OnAnimatorMove()

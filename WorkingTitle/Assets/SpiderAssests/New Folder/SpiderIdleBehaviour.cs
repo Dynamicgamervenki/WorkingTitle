@@ -5,26 +5,34 @@ using UnityEngine.AI;
 
 public class SpiderIdleBehaviour : StateMachineBehaviour
 {
-    public Transform _playerRef;
+    EnemyBehaviour behaviour;
+   
     // OnStateEnter is called when a transition starts and the state machine starts to evaluate this state
     override public void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
-        _playerRef = animator.GetComponent<SpiderScripts>().PlayerRef;
+        if(behaviour == null && animator.TryGetComponent(out EnemyBehaviour enemy )) 
+        { 
+            behaviour = enemy;
+        }
+        behaviour.agent.isStopped = true;
+        behaviour.EnemyLookAtPlayer();
+       
     }
-
+   
     // OnStateUpdate is called on each Update frame between OnStateEnter and OnStateExit callbacks
     override public void OnStateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
-
-        if(_playerRef != null&& Vector3.Distance(animator.transform.position, _playerRef.position) > 1.3f)
+        Debug.LogError(behaviour.ReturnDistance() > behaviour.JumpDistance);
+        Debug.LogError(behaviour.ReturnDistance());
+        if (behaviour.ReturnDistance() > behaviour.JumpDistance)
         {
-            animator.SetBool("Walk", true);
+            animator.SetTrigger("Jump");
         }
-        else
+        animator.SetBool("Walk", behaviour.ReturnDistance() > behaviour.attackDistance);
+        if (Time.time -behaviour.TimerCounter >= behaviour.TimeToAttack)
         {
-            animator.SetBool("Walk", false);
+            behaviour.TimerCounter = Time.time;
             animator.SetTrigger("Attack");
-            return;
         }
     }
 
