@@ -32,11 +32,15 @@ public class SpiderWalkStateBehaviour : StateMachineBehaviour
         //        animator.SetTrigger("Attack");
         //    }
         //}
-        Debug.LogError(behaviour.ReturnDistance() > behaviour.JumpDistance);
+        Debug.LogError(behaviour.ReturnDistance() > behaviour.JumpDistanceMin);
         Debug.LogError(behaviour.ReturnDistance() );
-        if(behaviour.ReturnDistance() < behaviour.JumpDistance)
+        if (behaviour.ReturnDistance() > behaviour.JumpDistanceMin && behaviour.ReturnDistance() < behaviour.JumpDistanceMax)
         {
-            animator.SetTrigger("Jump");
+            if (Time.time - behaviour.JumpTimerCounter >= behaviour.TimeToJumpAttack)
+            {
+                behaviour.JumpTimerCounter = Time.time;
+                animator.SetTrigger("Jump");
+            }
         }
         behaviour.agent.SetDestination(behaviour.playerREF.position);
         behaviour.EnemyLookAtPlayer();

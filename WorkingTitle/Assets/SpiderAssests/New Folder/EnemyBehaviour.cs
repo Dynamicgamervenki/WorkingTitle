@@ -11,10 +11,10 @@ public class EnemyBehaviour : MonoBehaviour
 
     public Transform playerREF;
 
-    public float attackDistance, followdistance,JumpDistance;
+    public float attackDistance, followdistance,JumpDistanceMin, JumpDistanceMax;
 
-    [SerializeField]public float TimeToAttack;
-    [HideInInspector] public float TimerCounter;
+    [SerializeField]public float TimeToAttack,TimeToJumpAttack;
+    [HideInInspector] public float TimerCounter,JumpTimerCounter;
     private void OnEnable()
     {
         agent = GetComponent<NavMeshAgent>();
@@ -37,5 +37,6 @@ public class EnemyBehaviour : MonoBehaviour
         direction.y = 0; // Keep the rotation only in the horizontal pl
         Quaternion lookRotation = Quaternion.LookRotation(direction);
         transform.rotation = Quaternion.Slerp(transform.rotation, lookRotation, Time.deltaTime * 5f); // Smooth the rotation
+        //transform.LookAt(-playerREF.position);
     }  
 }

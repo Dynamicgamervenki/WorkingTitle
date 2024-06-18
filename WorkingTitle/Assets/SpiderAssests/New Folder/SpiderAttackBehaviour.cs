@@ -7,6 +7,8 @@ public class SpiderAttackBehaviour : StateMachineBehaviour
     // OnStateEnter is called when a transition starts and the state machine starts to evaluate this state
     EnemyBehaviour behaviour;
     [SerializeField] float minTime=0.5f, maxTime=1f;
+    [SerializeField] int attackCounter;
+    [SerializeField] float attackDistance;
     override public void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
         if(behaviour==null&& animator.TryGetComponent(out EnemyBehaviour enemy)) 
@@ -17,16 +19,28 @@ public class SpiderAttackBehaviour : StateMachineBehaviour
     }
 
     // OnStateUpdate is called on each Update frame between OnStateEnter and OnStateExit callbacks
+
     override public void OnStateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
-        
+        if(behaviour.ReturnDistance() < attackDistance)
+        {
+            if (Time.time - behaviour.TimerCounter <= behaviour.TimeToAttack)
+            {
+                behaviour.TimerCounter = Time.time;
+                animator.SetInteger("Attack", attackCounter);
+            }
+        }
+        else
+        {
+            animator.SetInteger("Attack", 0);
+        }
     }
 
     // OnStateExit is called when a transition ends and the state machine finishes evaluating this state
-    //override public void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
-    //{
-    //    
-    //}
+    override public void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
+    {
+        
+    }
 
     // OnStateMove is called right after Animator.OnAnimatorMove()
     //override public void OnStateMove(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)

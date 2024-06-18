@@ -22,17 +22,23 @@ public class SpiderIdleBehaviour : StateMachineBehaviour
     // OnStateUpdate is called on each Update frame between OnStateEnter and OnStateExit callbacks
     override public void OnStateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
-        Debug.LogError(behaviour.ReturnDistance() > behaviour.JumpDistance);
+        behaviour.EnemyLookAtPlayer();
+        Debug.LogError(behaviour.ReturnDistance() > behaviour.JumpDistanceMin);
         Debug.LogError(behaviour.ReturnDistance());
-        if (behaviour.ReturnDistance() > behaviour.JumpDistance)
+        if (behaviour.ReturnDistance() > behaviour.JumpDistanceMin && behaviour.ReturnDistance() < behaviour.JumpDistanceMax)
         {
-            animator.SetTrigger("Jump");
+            if(Time.time - behaviour.JumpTimerCounter >= behaviour.TimeToJumpAttack)
+            {
+
+                behaviour.JumpTimerCounter = Time.time;
+                animator.SetTrigger("Jump");
+            }
         }
         animator.SetBool("Walk", behaviour.ReturnDistance() > behaviour.attackDistance);
         if (Time.time -behaviour.TimerCounter >= behaviour.TimeToAttack)
         {
             behaviour.TimerCounter = Time.time;
-            animator.SetTrigger("Attack");
+            animator.SetInteger("Attack",1);
         }
     }
 
