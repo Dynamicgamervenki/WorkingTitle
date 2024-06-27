@@ -32,8 +32,8 @@ public class SpiderWalkStateBehaviour : StateMachineBehaviour
         //        animator.SetTrigger("Attack");
         //    }
         //}
-        Debug.LogError(behaviour.ReturnDistance() > behaviour.JumpDistanceMin);
-        Debug.LogError(behaviour.ReturnDistance() );
+        //Debug.LogError(behaviour.ReturnDistance() > behaviour.JumpDistanceMin);
+        //Debug.LogError(behaviour.ReturnDistance() );
         if (behaviour.ReturnDistance() > behaviour.JumpDistanceMin && behaviour.ReturnDistance() < behaviour.JumpDistanceMax)
         {
             if (Time.time - behaviour.JumpTimerCounter >= behaviour.TimeToJumpAttack)

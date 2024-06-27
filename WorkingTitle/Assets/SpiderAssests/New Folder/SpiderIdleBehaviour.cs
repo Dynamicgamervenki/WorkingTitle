@@ -23,8 +23,8 @@ public class SpiderIdleBehaviour : StateMachineBehaviour
     override public void OnStateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
         behaviour.EnemyLookAtPlayer();
-        Debug.LogError(behaviour.ReturnDistance() > behaviour.JumpDistanceMin);
-        Debug.LogError(behaviour.ReturnDistance());
+        //Debug.LogError(behaviour.ReturnDistance() > behaviour.JumpDistanceMin);
+        //Debug.LogError(behaviour.ReturnDistance());
         if (behaviour.ReturnDistance() > behaviour.JumpDistanceMin && behaviour.ReturnDistance() < behaviour.JumpDistanceMax)
         {
             if(Time.time - behaviour.JumpTimerCounter >= behaviour.TimeToJumpAttack)
@@ -38,7 +38,7 @@ public class SpiderIdleBehaviour : StateMachineBehaviour
         if (Time.time -behaviour.TimerCounter >= behaviour.TimeToAttack)
         {
             behaviour.TimerCounter = Time.time;
-            animator.SetInteger("Attack",1);
+            animator.SetInteger("Attack",Random.Range(1,3));
         }
     }
 

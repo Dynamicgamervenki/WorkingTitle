@@ -11,6 +11,7 @@ public class EnemyBehaviour : MonoBehaviour
 
     public Transform playerREF;
 
+    public CustomSpherDetection FangAttackCollision,RightLegAttactDetection,LeftLegAttactDetection;
     public float attackDistance, followdistance,JumpDistanceMin, JumpDistanceMax;
 
     [SerializeField]public float TimeToAttack,TimeToJumpAttack;
