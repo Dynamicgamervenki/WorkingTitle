@@ -15,6 +15,7 @@ public class PlayerManager : MonoBehaviour
     public InputManager inputManager;
     public AnimatorManager animatorManager;
     public CustomBoxDetection AttackDetect;
+    public RootMotionController RootMotionControllerInstance;
     private void Awake()
     {
         if(Instance == null)
@@ -34,6 +35,7 @@ public class PlayerManager : MonoBehaviour
         _playerComboSystemInstance = Temp.GetComponent<PlayerComboSystem>();
         _PlayerRopeClimbInstance = Temp.GetComponentInChildren<PlayerRopeClimb>();
         _SwordEquipInstance = Temp.GetComponentInChildren<SwordEquip>();
+        RootMotionControllerInstance=Temp.GetComponent<RootMotionController>();
 
     }
 }

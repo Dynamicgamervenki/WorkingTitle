@@ -9,6 +9,7 @@ public class SpiderAttackBehaviour : StateMachineBehaviour
     [SerializeField] float minTime=0.5f, maxTime=1f;
     [SerializeField] int attackCounter;
     [SerializeField] float attackDistance, detectStart, detectEnd;
+    [SerializeField] bool detect; 
     override public void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
         if(behaviour==null&& animator.TryGetComponent(out EnemyBehaviour enemy)) 
@@ -16,6 +17,7 @@ public class SpiderAttackBehaviour : StateMachineBehaviour
             behaviour = enemy;
         }
         behaviour.TimeToAttack = Random.Range(minTime, maxTime);
+        detect = true;
     }
 
     // OnStateUpdate is called on each Update frame between OnStateEnter and OnStateExit callbacks
@@ -34,9 +36,13 @@ public class SpiderAttackBehaviour : StateMachineBehaviour
         {
             animator.SetInteger("Attack", 0);
         }
-        if(stateInfo.normalizedTime>=detectStart && stateInfo.normalizedTime<=detectEnd)
+        if(stateInfo.normalizedTime>=detectStart && stateInfo.normalizedTime<=detectEnd && detect)
         {
-
+            if(behaviour.FangAttackCollision.ReturnCollider().gameObject.TryGetComponent(out Animator PlayerREF)) 
+            {
+                PlayerREF.SetTrigger("PlayerHit");
+                detect = false;
+            }
         }
 
     }

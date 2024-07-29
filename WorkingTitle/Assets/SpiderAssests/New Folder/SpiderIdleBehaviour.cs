@@ -18,7 +18,7 @@ public class SpiderIdleBehaviour : StateMachineBehaviour
         behaviour.EnemyLookAtPlayer();
        
     }
-   
+    [SerializeField] int attackMin, attckMax;
     // OnStateUpdate is called on each Update frame between OnStateEnter and OnStateExit callbacks
     override public void OnStateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
@@ -38,7 +38,7 @@ public class SpiderIdleBehaviour : StateMachineBehaviour
         if (Time.time -behaviour.TimerCounter >= behaviour.TimeToAttack)
         {
             behaviour.TimerCounter = Time.time;
-            animator.SetInteger("Attack",Random.Range(1,3));
+            animator.SetInteger("Attack",Random.Range(attackMin, attckMax));
         }
     }
 
