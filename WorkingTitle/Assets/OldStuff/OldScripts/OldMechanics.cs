@@ -6,7 +6,7 @@ using UnityEngine.Events;
 using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.XR;
 
-public class PlayerController : MonoBehaviour
+public class OldMechanics : MonoBehaviour
 {
     private Animator anim;
     public PlayerInputs input;

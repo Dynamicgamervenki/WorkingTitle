@@ -7,7 +7,7 @@ public class RootMotionController : MonoBehaviour
 {
     // Start is called before the first frame update
     Vector3 movement;
-    [SerializeField] float moveAmount;
+    [SerializeField] public float moveAmount;
     Quaternion target;
     [SerializeField] float degreeDelta = 500;
     Vector3 cam;
@@ -20,13 +20,20 @@ public class RootMotionController : MonoBehaviour
     Animator _animator;
 
 
+
+
     //Cine machine
     //[SerializeField] CinemachineFreeLook followCam;
     //[SerializeField] CinemachineVirtualCamera aimCam;
+
+    Mechanics mechanics;
+
     private void Start()
     {
         _animator = GetComponent<Animator>();
         //followCam.Priority = 15;
+
+        mechanics = GetComponent<Mechanics>();
     }
     private void Update()
     {
@@ -56,6 +63,9 @@ public class RootMotionController : MonoBehaviour
     }
     void Locomotion()
     {
+        if (mechanics.isRopeClimbing)
+            return;
+
         _runValue = (Input.GetKey(KeyCode.LeftShift)) ? 5f : 1f;
         _animator.SetFloat("Locomotion", moveAmount * _runValue, damValue, Time.deltaTime);
 
