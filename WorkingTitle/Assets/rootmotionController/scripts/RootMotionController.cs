@@ -33,26 +33,14 @@ public class RootMotionController : MonoBehaviour
         movement = new Vector3(Input.GetAxis("Horizontal"), 0f, Input.GetAxis("Vertical"));
         moveAmount = Mathf.Clamp01(Mathf.Abs(movement.x) + Mathf.Abs(movement.z));
         Locomotion();
-        if (Input.GetKey(KeyCode.Mouse1))
-        {
-            //followCam.Priority = 10;
-            //aimCam.Priority = 15;
-            AimMovement();
-            _animator.SetBool("Aim", true);
-        }
-        else
-        {
-            //aimCam.Priority = 10;
-            //followCam.Priority = 15;
-            _animator.SetBool("Aim", false);
-        }
+        //_animator.SetFloat("moveX", movement.x, damValue, Time.deltaTime);
+        //_animator.SetFloat("moveY", movement.z, damValue, Time.deltaTime);
 
     }
 
     void AimMovement()
     {
-        _animator.SetFloat("moveX", movement.x, damValue, Time.deltaTime);
-        _animator.SetFloat("moveY", movement.z, damValue, Time.deltaTime);
+       
     }
     void Locomotion()
     {
@@ -82,5 +70,14 @@ public class RootMotionController : MonoBehaviour
             target = Quaternion.LookRotation(movement);
             transform.rotation = Quaternion.RotateTowards(transform.rotation, target, degreeDelta * Time.deltaTime);
         }
+    }
+
+    public void PlayerBalance()
+    {
+        _animator.SetLayerWeight(2, 1f);
+    }
+    public void PlayerBalanceComplete()
+    {
+        _animator.SetLayerWeight(2, 0f);
     }
 }
