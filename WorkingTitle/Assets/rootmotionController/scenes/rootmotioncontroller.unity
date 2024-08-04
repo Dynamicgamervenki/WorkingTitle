@@ -4491,6 +4491,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5434384569418237873, guid: 2b65f0c2ac044d34f834bd96bf343954,
         type: 3}
+      propertyPath: endValue
+      value: 0.4
+      objectReference: {fileID: 0}
+    - target: {fileID: 5434384569418237873, guid: 2b65f0c2ac044d34f834bd96bf343954,
+        type: 3}
       propertyPath: JumpForce
       value: 3
       objectReference: {fileID: 0}
@@ -4498,6 +4503,11 @@ PrefabInstance:
         type: 3}
       propertyPath: degreeDelta
       value: 100
+      objectReference: {fileID: 0}
+    - target: {fileID: 5434384569418237873, guid: 2b65f0c2ac044d34f834bd96bf343954,
+        type: 3}
+      propertyPath: lerpDuration
+      value: 0.2
       objectReference: {fileID: 0}
     - target: {fileID: 5434384569418237873, guid: 2b65f0c2ac044d34f834bd96bf343954,
         type: 3}

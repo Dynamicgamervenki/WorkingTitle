@@ -1,4 +1,6 @@
+using System.Collections;
 using UnityEngine;
+
 
 [RequireComponent(typeof(CharacterController))]
 public class RootMotionController : MonoBehaviour
@@ -66,7 +68,11 @@ public class RootMotionController : MonoBehaviour
 
         _runValue = (Input.GetKey(KeyCode.LeftShift)) ? 5f : 1f;
         _animator.SetFloat("Locomotion", moveAmount * _runValue, damValue, Time.deltaTime);
-        if(jumpPerformed) { _animator.SetTrigger("Jump"); _characterController.Move(Vector3.up* JumpForce); }
+        //if(jumpPerformed) { _animator.SetTrigger("Jump"); _characterController.Move(Vector3.up* JumpForce); }
+        if (jumpPerformed) 
+        {
+            StartCoroutine(nameof(Jump)); 
+        }
         movement = (Quaternion.LookRotation(new Vector3(cam.x, 0f, cam.z)) * movement);
         if (animationBusy) { return; }
         if (moveAmount > 0f)
@@ -98,17 +104,32 @@ public class RootMotionController : MonoBehaviour
             transform.position.z);
         Grounded = Physics.CheckSphere(spherePosition, GroundedRadius, GroundLayers,
             QueryTriggerInteraction.Ignore);
-
+       // StopCoroutine(nameof(Jump));
         // update animator if using character
         if (_animator)
         {
             _animator.SetBool("IsGrounded", Grounded);
         }
     }
-
-    private void JumpAndGravity()
+    [SerializeField] float lerpDuration = 3;
+    [SerializeField] float startValue = 0;
+    [SerializeField] float endValue = 10;
+    float valueToLerp;
+    private IEnumerator Jump()
     {
-       
+        float timeElapsed = 0;
+        _animator.SetTrigger("Jump");
+        while (timeElapsed < lerpDuration)
+        {
+            valueToLerp = Mathf.Lerp(startValue, endValue, timeElapsed / lerpDuration);
+            _characterController.Move(Vector3.up * valueToLerp);
+
+            timeElapsed += Time.deltaTime;
+
+            yield return null;
+        }
+
+        valueToLerp = endValue;
     }
 
     public void PlayerBalance()
