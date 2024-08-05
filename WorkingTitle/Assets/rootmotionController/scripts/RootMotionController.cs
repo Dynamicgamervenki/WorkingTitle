@@ -33,8 +33,9 @@ public class RootMotionController : MonoBehaviour
 
     [Tooltip("What layers the character uses as ground")]
     public LayerMask GroundLayers;
-    bool jumpPerformed;
-    [SerializeField] float JumpForce;
+    bool jumpPerformed,isJumping;
+    [SerializeField] float jumpForce,gravity;
+    Vector3 velocity;
 
 
 
@@ -69,12 +70,12 @@ public class RootMotionController : MonoBehaviour
         _runValue = (Input.GetKey(KeyCode.LeftShift)) ? 5f : 1f;
         _animator.SetFloat("Locomotion", moveAmount * _runValue, damValue, Time.deltaTime);
         //if(jumpPerformed) { _animator.SetTrigger("Jump"); _characterController.Move(Vector3.up* JumpForce); }
-        if (jumpPerformed) 
+        if (animationBusy) { return; }
+        if (jumpPerformed && Grounded && !isJumping)
         {
-            StartCoroutine(nameof(Jump)); 
+            StartCoroutine(Jump());
         }
         movement = (Quaternion.LookRotation(new Vector3(cam.x, 0f, cam.z)) * movement);
-        if (animationBusy) { return; }
         if (moveAmount > 0f)
         {
             cam = Camera.main.transform.forward;
@@ -109,29 +110,69 @@ public class RootMotionController : MonoBehaviour
         if (_animator)
         {
             _animator.SetBool("IsGrounded", Grounded);
+            _animator.SetBool("FreeFall", !Grounded);
         }
     }
-    [SerializeField] float lerpDuration = 3;
-    [SerializeField] float startValue = 0;
-    [SerializeField] float endValue = 10;
-    float valueToLerp;
     private IEnumerator Jump()
     {
-        float timeElapsed = 0;
+        isJumping = true;
+        float initialY = transform.position.y;
         _animator.SetTrigger("Jump");
-        while (timeElapsed < lerpDuration)
+
+        while (Input.GetKey(KeyCode.Space))
         {
-            valueToLerp = Mathf.Lerp(startValue, endValue, timeElapsed / lerpDuration);
-            _characterController.Move(Vector3.up * valueToLerp);
+            if (!Grounded)
+            {
+                velocity.y += gravity * Time.deltaTime;
+            }
+            else
+            {
+                velocity.y = Mathf.Sqrt(jumpForce * 2f * gravity);
+                while (velocity.y > 0)
+                {
+                    _characterController.Move(velocity * Time.deltaTime);
+                    velocity.y -= gravity * Time.deltaTime;
+                    yield return null;
+                }
+            }
 
-            timeElapsed += Time.deltaTime;
-
+            _characterController.Move(velocity * Time.deltaTime);
             yield return null;
         }
 
-        valueToLerp = endValue;
+        while (!Grounded)
+        {
+            velocity.y -= gravity * Time.deltaTime;
+            _characterController.Move(velocity * Time.deltaTime);
+            yield return null;
+        }
+
+        isJumping = false;
     }
 
+
+    #region
+    //[SerializeField] float lerpDuration = 3;
+    //[SerializeField] float startValue = 0;
+    //[SerializeField] float endValue = 10;
+    //float valueToLerp;
+    //private IEnumerator Jump()
+    //{
+    //    float timeElapsed = 0;
+    //    _animator.SetTrigger("Jump");
+    //    while (timeElapsed < lerpDuration)
+    //    {
+    //        valueToLerp = Mathf.Lerp(startValue, endValue, timeElapsed / lerpDuration);
+    //        _characterController.Move(Vector3.up * valueToLerp);
+
+    //        timeElapsed += Time.deltaTime;
+
+    //        yield return null;
+    //    }
+
+    //    valueToLerp = endValue;
+    //}
+    #endregion
     public void PlayerBalance()
     {
         _animator.SetLayerWeight(2, 1f);

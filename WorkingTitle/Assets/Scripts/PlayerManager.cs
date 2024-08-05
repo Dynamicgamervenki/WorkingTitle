@@ -16,6 +16,7 @@ public class PlayerManager : MonoBehaviour
     public AnimatorManager animatorManager;
     public CustomBoxDetection AttackDetect;
     public RootMotionController RootMotionControllerInstance;
+    public NewRootMotionController NewRootMotionControllerInstance;
     private void Awake()
     {
         if(Instance == null)
