@@ -11,7 +11,7 @@ public class PlayerRotateState : StateMachineBehaviour
         //    controller=animator.GetComponent<PlayerController>();
         //}
         animator.SetLayerWeight(1, 1f);
-        PlayerManager.Instance.RootMotionControllerInstance.animationBusy = true;
+        PlayerManager.Instance.NewRootMotionControllerInstance.animationBusy = true;
     }
 
     // OnStateUpdate is called on each Update frame between OnStateEnter and OnStateExit callbacks
@@ -20,7 +20,7 @@ public class PlayerRotateState : StateMachineBehaviour
         float currentTime = stateInfo.normalizedTime * stateInfo.length;
         if (currentTime > .5f && animator.IsInTransition(0))
         {
-            animator.rootRotation = PlayerManager.Instance.RootMotionControllerInstance.DesiredRotation;
+            animator.rootRotation = PlayerManager.Instance.NewRootMotionControllerInstance.DesiredRotation;
         }
     }
 
@@ -28,6 +28,6 @@ public class PlayerRotateState : StateMachineBehaviour
     override public void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
         animator.SetLayerWeight(1, 0f);
-        PlayerManager.Instance.RootMotionControllerInstance.animationBusy = false;
+        PlayerManager.Instance.NewRootMotionControllerInstance.animationBusy = false;
     }
 }
