@@ -48,10 +48,15 @@ public class NewRootMotionController : MonoBehaviour
         Cursor.lockState = CursorLockMode.Locked;
         
     }
+    bool canDoubleJump;
     private void Update()
     {
         movement = new Vector3(Input.GetAxis("Horizontal"), 0f, Input.GetAxis("Vertical"));
         if(Input.GetKeyDown(KeyCode.Space))
+        {
+            Jump();
+        }
+        if(canDoubleJump && Input.GetKeyDown(KeyCode.Space))
         {
             Jump();
         }
@@ -106,6 +111,7 @@ public class NewRootMotionController : MonoBehaviour
             //isJumping = !_characterController.isGrounded;
             isJumping = !_characterController.isGrounded;
             rootMotion = Vector3.zero;
+            canDoubleJump = true;
         }
         else
         {
@@ -132,8 +138,8 @@ public class NewRootMotionController : MonoBehaviour
     }
     Vector3 CalculateAirContoll()
     {
-        //return ((Vector3.forward * movement.z) + (Vector3.right * movement.x)) * (airControl/100);
-        return ((Vector3.forward * movement.z)) * (airControl/100);
+        return ((Vector3.forward * movement.z) + (Vector3.right * movement.x)) * (airControl/100);
+        //return ((Vector3.forward * movement.z)) * (airControl/100);
         //return ((transform.InverseTransformPoint(transform.forward) * movement.z) + (transform.InverseTransformPoint(transform.right) * movement.x)) * (airControl / 100);
     }
    
