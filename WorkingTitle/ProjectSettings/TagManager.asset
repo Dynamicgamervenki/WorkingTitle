@@ -10,6 +10,7 @@ TagManager:
   - WallJump
   - Scale
   - climb
+  - Balance
   layers:
   - Default
   - TransparentFX

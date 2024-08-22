@@ -502,7 +502,7 @@ public class PlayerLocomotion : MonoBehaviour
         }
         else
         {
-            Debug.Log("Stand Up Nigga");
+            Debug.Log("Stand Up ");
             isPlayerCrouching = false;
             animatorManager.anim.SetBool("isCrouching", false);
         }

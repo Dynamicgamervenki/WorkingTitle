@@ -37,6 +37,7 @@ public class RootMotionController : MonoBehaviour
     [SerializeField] float jumpForce,gravity;
     Vector3 velocity;
 
+    Mechanics mechanics;
 
 
     //Cine machine
@@ -53,8 +54,9 @@ public class RootMotionController : MonoBehaviour
         movement = new Vector3(Input.GetAxis("Horizontal"), 0f, Input.GetAxis("Vertical"));
         jumpPerformed=Input.GetKeyDown(KeyCode.Space);
         moveAmount = Mathf.Clamp01(Mathf.Abs(movement.x) + Mathf.Abs(movement.z));
-        Locomotion();
+        Debug.Log(moveAmount);
         GroundedCheck();
+        Locomotion();
         //_animator.SetFloat("moveX", movement.x, damValue, Time.deltaTime);
         //_animator.SetFloat("moveY", movement.z, damValue, Time.deltaTime);
 
@@ -66,7 +68,6 @@ public class RootMotionController : MonoBehaviour
     }
     void Locomotion()
     {
-
         _runValue = (Input.GetKey(KeyCode.LeftShift)) ? 5f : 1f;
         _animator.SetFloat("Locomotion", moveAmount * _runValue, damValue, Time.deltaTime);
         //if(jumpPerformed) { _animator.SetTrigger("Jump"); _characterController.Move(Vector3.up* JumpForce); }

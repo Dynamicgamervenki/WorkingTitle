@@ -5,9 +5,8 @@ using UnityEngine;
 
 public class Mechanics : MonoBehaviour
 {
-    public Animator anim;
-    public bool isRopeClimbing = false;  
-    RootMotionController rootMotionController;
+    [HideInInspector]public Animator anim;
+    NewRootMotionController motionController;
     CharacterController characterController;
 
     [Header("Ground Check")]
@@ -21,19 +20,35 @@ public class Mechanics : MonoBehaviour
     bool hasControl;
     bool ropeToWallClimbing = false;
 
+    [Header("Interaction")]
+    public LayerMask interaction;
+    public bool isInteracting = false;
+
+    public bool isBalanceWalking = false;
+
+    [Header("Rope Climbing")]
+    public bool isRopeClimbing = false;
+    public float yOffset;
+    public float ropeDetectionRadius = 2.0f;
+    public float maxDistance = 2.0f;
+    public LayerMask ropeMask;
+
+
     private void Awake()
     {
         anim = GetComponent<Animator>();
         characterController = GetComponent<CharacterController>();
-         rootMotionController = GetComponent<RootMotionController>();
+        motionController = FindObjectOfType<NewRootMotionController>();
+
+        Cursor.lockState = CursorLockMode.Locked;
     }
 
     private void Update()
     {
-        GroundCheck();
-        isGrounded = gameObject.GetComponent<CharacterController>().isGrounded;
+        RopeClimbing();
+        Crouch();
 
-        if(isRopeClimbing)
+        if (isRopeClimbing)
         {
             anim.SetBool("isRopeClimbing", true);
             if(Input.GetAxis("Vertical") > 0f)
@@ -55,24 +70,17 @@ public class Mechanics : MonoBehaviour
 
     private void OnControllerColliderHit(ControllerColliderHit hit)
     {
-        if (hit.gameObject.CompareTag("Rope"))
+        if(hit.gameObject.CompareTag("Balance"))
         {
-                Debug.Log("In Contact With Rope");
-                isRopeClimbing = true;
+            Debug.Log("balance started");
+            isBalanceWalking = true;
+            anim.SetLayerWeight(2, 1.0f);
         }
-    }
-
-    private void OnCollisionEnter(Collision collision)
-    {
-        if(collision.gameObject.tag == "climb" && isRopeClimbing)
-        { 
-            ropeToWallClimbing = true;
+        else
+        {
+            isBalanceWalking = false;
+            anim.SetLayerWeight(2, 0.0f);
         }
-    }
-
-    private void GroundCheck()
-    {
-        isGrounded = Physics.CheckSphere(transform.TransformPoint(groundCheckOffset), groundCheckRadius, groundMask);
     }
 
     public void OnControl(bool inControl)
@@ -88,10 +96,60 @@ public class Mechanics : MonoBehaviour
 
     }
 
+    private void RopeClimbing()
+    {
+        if(Physics.SphereCast(transform.position + Vector3.up * yOffset,ropeDetectionRadius,transform.forward,out RaycastHit hit,maxDistance,ropeMask))
+        {
+            if (hit.transform.gameObject.layer == ropeMask)
+                Debug.Log("RopeFound");
+        }
+    }
+
+    bool isCrouched = false;
+
+    private void Crouch()
+    {
+        if (motionController.Grounded && Input.GetKeyDown(KeyCode.C))
+        {
+            isCrouched = !isCrouched;
+        }
+
+        if(isCrouched)
+        {
+            Debug.Log("Crouched");
+            anim.SetBool("isCrouched", true);
+        }
+        if(!isCrouched)
+        {
+            Debug.Log("stand up");
+            anim.SetBool("isCrouched", false);
+        }
+    }
+
+    private void Interaction()      //for pushing objects
+    {
+        if(Physics.Raycast(transform.position + Vector3.up * 0.2f,transform.forward,0.2f,interaction))
+        {
+            isInteracting = true;
+        }
+        else
+        {
+            isInteracting = false;
+        }
+        anim.SetBool("isInteracting", isInteracting);
+    }
+
+
     private void OnDrawGizmosSelected()
     {
         Gizmos.color = new Vector4(0, 1, 0, 0.5f);
-        Gizmos.DrawSphere(transform.TransformPoint(groundCheckOffset), groundCheckRadius);
+        Gizmos.DrawWireSphere(transform.TransformPoint(groundCheckOffset), groundCheckRadius);
+
+        Gizmos.color = Color.yellow;
+        Debug.DrawRay(transform.position +  Vector3.up * 0.3f, transform.forward * 0.2f);
+
+        Gizmos.color = Color.black;
+        Gizmos.DrawWireSphere(transform.position + Vector3.up * yOffset + transform.forward * maxDistance,ropeDetectionRadius);
     }
 
 

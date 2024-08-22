@@ -40,6 +40,8 @@ public class NewRootMotionController : MonoBehaviour
 
     Vector3 rootMotion;
 
+    Mechanics mechanics;
+
 
     private void Start()
     {
