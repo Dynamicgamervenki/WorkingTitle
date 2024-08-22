@@ -128,14 +128,27 @@ public class NewRootMotionController : MonoBehaviour
         }
 
     }
+    int jumpCount;
     void Jump()
     {
-        if(!isJumping)
+        if(_characterController.isGrounded)
         {
+            jumpCount++;
             _animator.SetTrigger("Jump");
             isJumping = true;
             velocity = _animator.velocity*jumpDamp;
             velocity.y = Mathf.Sqrt(2 * gravity * jumpHeight);
+        }
+        else
+        {
+            if (jumpCount > 1)
+            {
+                _animator.SetTrigger("DoubleJump");
+                isJumping = true;
+                velocity = _animator.velocity * jumpDamp;
+                velocity.y = Mathf.Sqrt(2 * gravity * jumpHeight);
+                jumpCount = 0;
+            }
         }
     }
     Vector3 CalculateAirContoll()
