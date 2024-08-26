@@ -64,14 +64,10 @@ public class NewRootMotionController : MonoBehaviour
         GroundedCheck();
         if (mechanics.isRopeClimbing)
             return;
-        //if (Input.GetKeyDown(KeyCode.Space))
-        //{
-        //    Jump();
-        //}
-        //if (canDoubleJump && Input.GetKeyDown(KeyCode.Space))
-        //{
-        //    Jump();
-        //}
+        if (Input.GetKeyDown(KeyCode.Space))
+        {
+            Jump();
+        }
         moveAmount = Mathf.Clamp01(Mathf.Abs(movement.x) + Mathf.Abs(movement.z));
         Locomotion();
         
@@ -109,10 +105,10 @@ public class NewRootMotionController : MonoBehaviour
             transform.rotation = Quaternion.RotateTowards(transform.rotation, target, degreeDelta * Time.deltaTime);
         }
     }
-    private void OnAnimatorMove()
-    {
-        rootMotion += _animator.deltaPosition;
-    }
+    //private void OnAnimatorMove()
+    //{
+    //    rootMotion += _animator.deltaPosition;
+    //}
     private void FixedUpdate()
     {
         if (isJumping)
@@ -142,6 +138,7 @@ public class NewRootMotionController : MonoBehaviour
         }
 
     }
+    int jumpCount;
     void Jump()
     {
         if (mechanics.isRopeClimbing)
@@ -150,18 +147,29 @@ public class NewRootMotionController : MonoBehaviour
             return;
         if (mechanics.canClimbEdge)
             return;
-        if (!isJumping)
+
+        if (_characterController.isGrounded)
         {
+            jumpCount++;
             _animator.SetTrigger("Jump");
             isJumping = true;
-            velocity = _animator.velocity*jumpDamp;
+            velocity = _animator.velocity * jumpDamp;
             velocity.y = Mathf.Sqrt(2 * gravity * jumpHeight);
+        }
+        else
+        {
+            if (jumpCount > 1)
+            {
+                _animator.SetTrigger("DoubleJump");
+                isJumping = true;
+                velocity = _animator.velocity * jumpDamp;
+                velocity.y = Mathf.Sqrt(2 * gravity * jumpHeight);
+                jumpCount = 0;
+            }
         }
     }
     Vector3 CalculateAirContoll()
     {
-
-
         return ((Vector3.forward * movement.z) + (Vector3.right * movement.x)) * (airControl/100);
         //return ((Vector3.forward * movement.z)) * (airControl/100);
         //return ((transform.InverseTransformPoint(transform.forward) * movement.z) + (transform.InverseTransformPoint(transform.right) * movement.x)) * (airControl / 100);
