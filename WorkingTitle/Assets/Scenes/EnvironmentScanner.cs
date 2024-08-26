@@ -31,7 +31,7 @@ public class EnvironmentScanner : MonoBehaviour
 
     private void Update()
     {
-        //ObstacleCheck();
+        ObstacleCheck();
     }
 
 }

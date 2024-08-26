@@ -10,16 +10,16 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 3e0a417812e3a5e47903850036fc3354, type: 3}
-  m_Name: WallClimbing
+  m_Name: Climb
   m_EditorClassIdentifier: 
-  animName: WallClimbing
-  obstacleTag: climb
-  minHeight: 0
+  animName: Climb
+  obstacleTag: 
+  minHeight: 1
   maxHeight: 5.5
   postActionDelay: 0
   rotateToObstacle: 0
   enableTargetMatching: 1
-  avatarTarget: 3
-  matchStartTym: 0.43
-  matchTargetTym: 0.7
+  avatarTarget: 2
+  matchStartTym: 0.33
+  matchTargetTym: 0.55
   matchposWeight: {x: 0, y: 1, z: 0}

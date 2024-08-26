@@ -18,6 +18,7 @@ public class NewRootMotionController : MonoBehaviour
     [HideInInspector] public bool animationBusy;
     Animator _animator;
     CharacterController _characterController;
+    ParkourController parkourController;
 
     //Jump Values
     [Header("Player Grounded")]
@@ -32,7 +33,7 @@ public class NewRootMotionController : MonoBehaviour
 
     [Tooltip("What layers the character uses as ground")]
     public LayerMask GroundLayers;
-    bool  isJumping;
+    public bool  isJumping;
     [SerializeField] float jumpHeight, gravity;
     Vector3 velocity;
 
@@ -47,29 +48,39 @@ public class NewRootMotionController : MonoBehaviour
     {
         _animator = GetComponent<Animator>();
         _characterController = GetComponent<CharacterController>();
+        parkourController = FindObjectOfType<ParkourController>();
         Cursor.lockState = CursorLockMode.Locked;
         
+        mechanics = GetComponent<Mechanics>();
     }
     bool canDoubleJump;
     private void Update()
     {
+
         movement = new Vector3(Input.GetAxis("Horizontal"), 0f, Input.GetAxis("Vertical"));
-        if(Input.GetKeyDown(KeyCode.Space))
-        {
-            Jump();
-        }
-        if(canDoubleJump && Input.GetKeyDown(KeyCode.Space))
-        {
-            Jump();
-        }
+        if(!mechanics.inControl)
+            return;
+
+        GroundedCheck();
+        if (mechanics.isRopeClimbing)
+            return;
+        //if (Input.GetKeyDown(KeyCode.Space))
+        //{
+        //    Jump();
+        //}
+        //if (canDoubleJump && Input.GetKeyDown(KeyCode.Space))
+        //{
+        //    Jump();
+        //}
         moveAmount = Mathf.Clamp01(Mathf.Abs(movement.x) + Mathf.Abs(movement.z));
         Locomotion();
-        GroundedCheck();
         
 
     }
     void Locomotion()
     {
+        if(mechanics.isRopeClimbing)
+            return;
 
         _runValue = (Input.GetKey(KeyCode.LeftShift)) ? 5f : 1f;
         _animator.SetFloat("Locomotion", moveAmount * _runValue, damValue, Time.deltaTime);
@@ -117,6 +128,9 @@ public class NewRootMotionController : MonoBehaviour
         }
         else
         {
+            if (mechanics.isRopeClimbing || mechanics.canClimbEdge)
+                return;
+
             _characterController.Move(rootMotion + Vector3.down * stepDown);
             rootMotion = Vector3.zero;
             if (!_characterController.isGrounded)
@@ -130,7 +144,13 @@ public class NewRootMotionController : MonoBehaviour
     }
     void Jump()
     {
-        if(!isJumping)
+        if (mechanics.isRopeClimbing)
+            return;
+        if(mechanics.isCrouched)
+            return;
+        if (mechanics.canClimbEdge)
+            return;
+        if (!isJumping)
         {
             _animator.SetTrigger("Jump");
             isJumping = true;
@@ -140,6 +160,8 @@ public class NewRootMotionController : MonoBehaviour
     }
     Vector3 CalculateAirContoll()
     {
+
+
         return ((Vector3.forward * movement.z) + (Vector3.right * movement.x)) * (airControl/100);
         //return ((Vector3.forward * movement.z)) * (airControl/100);
         //return ((transform.InverseTransformPoint(transform.forward) * movement.z) + (transform.InverseTransformPoint(transform.right) * movement.x)) * (airControl / 100);
@@ -158,6 +180,8 @@ public class NewRootMotionController : MonoBehaviour
         if (_animator)
         {
             _animator.SetBool("IsGrounded", Grounded);
+            //if(mechanics.isRopeClimbing)
+            //    return; 
             _animator.SetBool("FreeFall", !Grounded);
         }
     }

@@ -48,7 +48,7 @@ public class ParkourController : MonoBehaviour
 
         anim.SetBool("mirrorAction", action.Mirror);
         playerController.OnControl(false);
-        anim.CrossFade(name, 0f);
+        anim.Play(name, 0);
 
         yield return null;
 
@@ -79,7 +79,6 @@ public class ParkourController : MonoBehaviour
         }
         yield return new WaitForSeconds(action.postActionDelay);
 
-        anim.SetBool("isRopeClimbing", false);
         playerController.OnControl(true);
         inAction = false;
     }
