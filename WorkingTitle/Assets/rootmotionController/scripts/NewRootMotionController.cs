@@ -16,7 +16,7 @@ public class NewRootMotionController : MonoBehaviour
     [SerializeField, Range(0f, 1f)] private float damValue;
     float _runValue;
     [HideInInspector] public bool animationBusy;
-    Animator _animator;
+    private Animator _animator;
     CharacterController _characterController;
     ParkourController parkourController;
 
@@ -105,10 +105,10 @@ public class NewRootMotionController : MonoBehaviour
             transform.rotation = Quaternion.RotateTowards(transform.rotation, target, degreeDelta * Time.deltaTime);
         }
     }
-    //private void OnAnimatorMove()
-    //{
-    //    rootMotion += _animator.deltaPosition;
-    //}
+    private void OnAnimatorMove()
+    {
+        rootMotion += _animator.deltaPosition;
+    }
     private void FixedUpdate()
     {
         if (isJumping)
@@ -219,5 +219,9 @@ public class NewRootMotionController : MonoBehaviour
         //Gizmos.DrawSphere(
         //    new Vector3(transform.position.x, transform.position.y - GroundedOffset, transform.position.z),
         //    GroundedRadius);
+    }
+    public Animator playerAnimator()
+    {
+        return _animator;
     }
 }
