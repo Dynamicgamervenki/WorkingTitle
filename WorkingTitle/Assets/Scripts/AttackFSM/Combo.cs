@@ -10,7 +10,6 @@ public class Combo : StateMachineBehaviour
     [SerializeField]float swordDetectEnableTime,swordDetectDisableTime;
     override public void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
-        animator.applyRootMotion = true;
         //PlayerManager.Instance._ThirdPersonControllerInstance._canMove = false;
         Debug.LogError("t");
         _canReciveInput=true;
@@ -24,16 +23,13 @@ public class Combo : StateMachineBehaviour
         {
             _canReciveInput=false;
             animator.SetInteger("ComboValue", _comboCount);
-            //mono.StartCoroutine(Motion(stateInfo.length,animator));
         }
        
         
-            if (stateInfo.normalizedTime >= swordDetectEnableTime && stateInfo.normalizedTime <= swordDetectDisableTime)
-            {
-                
-                if (PlayerManager.Instance.AttackDetect.ReturnCollider().transform.TryGetComponent(out Animator component) &&_canReciveInput) { component.SetTrigger("Hit"); _canReciveInput = false; }
-                //Debug.Log(PlayerManager.Instance.AttackDetect.ReturnCollider().transform);
-            }
+        if (stateInfo.normalizedTime >= swordDetectEnableTime && stateInfo.normalizedTime <= swordDetectDisableTime)
+        { 
+            if (PlayerManager.Instance.AttackDetect.ReturnCollider().transform.TryGetComponent(out Animator component) &&_canReciveInput) { component.SetTrigger("Hit"); _canReciveInput = false; }
+        }
         
 
     }
