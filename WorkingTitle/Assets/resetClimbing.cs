@@ -5,17 +5,18 @@ using UnityEngine;
 public class resetClimbing : StateMachineBehaviour
 {
 
-    PlayerLocomotion playerLocomotion;
+    Mechanics mechanics;
 
     private void Awake()
     {
-        playerLocomotion = FindObjectOfType<PlayerLocomotion>();
+        mechanics = FindObjectOfType<Mechanics>();
     }
     // OnStateEnter is called when a transition starts and the state machine starts to evaluate this state
-    //override public void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
-    //{
-    //    
-    //}
+    override public void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
+    {
+        mechanics.shell.transform.GetChild(0).gameObject.SetActive(false);
+       
+    }
 
     // OnStateUpdate is called on each Update frame between OnStateEnter and OnStateExit callbacks
     //override public void OnStateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
@@ -26,7 +27,11 @@ public class resetClimbing : StateMachineBehaviour
     //OnStateExit is called when a transition ends and the state machine finishes evaluating this state
     override public void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
-        playerLocomotion.climbingCliff = false;
+        //  mechanics.shell.gameObject.transform.GetChild(0).gameObject.SetActive(true);
+        mechanics.characterController.center = new Vector3(0, 2.86999989f, -0.1f);
+        mechanics.isRopeClimbing = false;
+        mechanics.anim.SetBool("isRopeClimbing",false);
+        
     }
 
     // OnStateMove is called right after Animator.OnAnimatorMove()

@@ -29,11 +29,6 @@ public class EnvironmentScanner : MonoBehaviour
         return obstacleHitData;
     }
 
-    private void Update()
-    {
-        ObstacleCheck();
-    }
-
 }
 
 public struct ObstacleHitData

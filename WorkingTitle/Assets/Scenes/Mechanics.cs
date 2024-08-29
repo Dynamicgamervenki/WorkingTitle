@@ -8,7 +8,7 @@ public class Mechanics : MonoBehaviour
 {
     [HideInInspector]public Animator anim;
     NewRootMotionController motionController;
-    CharacterController characterController;
+   public  CharacterController characterController;
 
     public float rotationSpeed;
     Quaternion targetRotation;
@@ -19,7 +19,7 @@ public class Mechanics : MonoBehaviour
     public bool isBalanceWalking = false;
 
     [Header("Rope Climbing")]
-    float climbSpeed = 0.75f;
+    public float climbSpeed = 0.75f;
     public bool withinRopeRadius = false;
     public bool isRopeClimbing = false;
     public float yOffset;
@@ -27,6 +27,8 @@ public class Mechanics : MonoBehaviour
     public float maxDistance = 2.0f;
     public LayerMask ropeMask;
 
+    public Transform shell;
+    public bool waitFor2Sec = false;
 
 
     private void Awake()
@@ -41,20 +43,18 @@ public class Mechanics : MonoBehaviour
     private void Update()
     {
         Crouch();
-        //PerformClimbingParkourAction();
         if (isRopeClimbing)
         {
-
             float verticalInput = Input.GetAxis("Vertical");
 
             Vector3 climbMovement = new Vector3(0, verticalInput * climbSpeed * Time.deltaTime, 0);
 
-            if (canClimbEdge && verticalInput > 0f)
-            {
-                climbMovement = Vector3.zero;
-            }
+            //if (canClimbEdge/* && verticalInput > 0f*/)
+            //{
+            //    climbMovement = Vector3.zero;
+            //}
+          //  characterController.Move(climbMovement);
 
-            characterController.Move(climbMovement);
 
             if (verticalInput > 0f)
             {
@@ -70,8 +70,9 @@ public class Mechanics : MonoBehaviour
             {
                 Debug.Log("Rope climbing down");
                 anim.SetFloat("moveY", 2.0f); // Climbing down
-            } 
-            
+            }
+
+
         }
 
     }
@@ -102,6 +103,7 @@ public class Mechanics : MonoBehaviour
     {
         if (other.gameObject.CompareTag("climb"))
             canClimbEdge = true;
+
     }
 
     private void OnTriggerExit(Collider other)
@@ -112,64 +114,40 @@ public class Mechanics : MonoBehaviour
 
     public void OnControl(bool inControl)
     {
-        //motionController.enabled = inControl;
-        //anim.applyRootMotion = inControl;
         this.inControl = inControl;
         characterController.enabled = inControl;
 
         if (!inControl)
         {
-            anim.SetFloat("moveAmount", 0f);
+            anim.SetFloat("Locomotion", 0f);
             targetRotation = transform.rotation;
         }
     }
 
+    bool hasExectuted = false;
     private void RopeClimbing()
     {
         withinRopeRadius = Physics.SphereCast(transform.position + Vector3.up * yOffset, ropeDetectionRadius, transform.forward, out RaycastHit hit, maxDistance, ropeMask);
 
 
-        if(withinRopeRadius && motionController.isJumping)
+        if (withinRopeRadius && motionController.isJumping)
         {
             isRopeClimbing = true;
-            anim.Play("Traversal_Pole_Climb_Enter", 0);
+            anim.Play("Rope", 0);
             characterController.enabled = false;
             transform.position = hit.point;
             characterController.enabled = true;
+            if(!hasExectuted)
+            this.transform.SetParent(hit.transform);
+            hit.transform.Rotate(0f, 180f, 0f);
+            this.transform.SetParent(null);
+            hasExectuted = true;
         }
-
-        //if (!withinRopeRadius && isRopeClimbing)
-        //{
-        //    isRopeClimbing = false;
-        //    anim.SetBool("isRopeClimbing", false);
-        //}
-
 
 
     }
 
-    //public bool inAction = false;
-    //private void PerformClimbingParkourAction()
-    //{
-    //    if (canClimbEdge)
-    //    {
-    //        if (Input.GetKeyDown(KeyCode.Space))
-    //        {
-    //            anim.applyRootMotion = true;
-    //            characterController.enabled = false;
-    //            anim.CrossFade("StepUp", 0.2f);
-    //            inAction = true;
-    //            isRopeClimbing = false;
-    //            Invoke("EnableChracterController", 1.350f);
-    //        }
-    //    }
-    //}
 
-    //private void EnableChracterController()
-    //{
-    //    inAction = false;
-    //    characterController.enabled = true;
-    //}
 
 
     public bool isCrouched = false;
@@ -197,34 +175,31 @@ public class Mechanics : MonoBehaviour
 
     private void OnDrawGizmosSelected()
     {
-        //Gizmos.color = new Vector4(0, 1, 0, 0.5f);
-        //Gizmos.DrawWireSphere(transform.TransformPoint(groundCheckOffset), groundCheckRadius);
 
-        //Gizmos.color = Color.yellow;
-        //Debug.DrawRay(transform.position +  Vector3.up * 0.3f, transform.forward * 0.2f);
+        Gizmos.color = Color.black;
+        Gizmos.DrawWireSphere(transform.position + Vector3.up * yOffset + transform.forward * maxDistance, ropeDetectionRadius);
 
-        //Gizmos.color = Color.black;
-        //Gizmos.DrawWireSphere(transform.position + Vector3.up * yOffset + transform.forward * maxDistance,ropeDetectionRadius);
-        Vector3 origin = transform.position + Vector3.up * yOffset;
-        Vector3 direction = transform.forward;
 
-        // Perform the SphereCast
-        bool withinRopeRadius = Physics.SphereCast(origin, ropeDetectionRadius, direction, out RaycastHit hit, maxDistance, ropeMask);
+        //Vector3 origin = transform.position + Vector3.up * yOffset;
+        //Vector3 direction = transform.forward;
 
-        // Draw the sphere at the origin of the SphereCast
-        Gizmos.color = Color.blue;
-        Gizmos.DrawWireSphere(origin, ropeDetectionRadius);
+        //// Perform the SphereCast
+        //bool withinRopeRadius = Physics.SphereCast(origin, ropeDetectionRadius, direction, out RaycastHit hit, maxDistance, ropeMask);
 
-        // Draw a line in the direction of the SphereCast
-        Gizmos.color = Color.green;
-        Gizmos.DrawLine(origin, origin + direction * maxDistance);
+        //// Draw the sphere at the origin of the SphereCast
+        //Gizmos.color = Color.blue;
+        //Gizmos.DrawWireSphere(origin, ropeDetectionRadius);
 
-        // If a hit is detected, draw the hit point
-        if (withinRopeRadius)
-        {
-            Gizmos.color = Color.red;
-            Gizmos.DrawWireSphere(hit.point, ropeDetectionRadius);
-        }
+        //// Draw a line in the direction of the SphereCast
+        //Gizmos.color = Color.green;
+        //Gizmos.DrawLine(origin, origin + direction * maxDistance);
+
+        //// If a hit is detected, draw the hit point
+        //if (withinRopeRadius)
+        //{
+        //    Gizmos.color = Color.red;
+        //    Gizmos.DrawWireSphere(hit.point, ropeDetectionRadius);
+        //}
 
     }
 

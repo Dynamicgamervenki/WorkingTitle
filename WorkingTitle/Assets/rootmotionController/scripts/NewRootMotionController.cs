@@ -58,12 +58,12 @@ public class NewRootMotionController : MonoBehaviour
     {
 
         movement = new Vector3(Input.GetAxis("Horizontal"), 0f, Input.GetAxis("Vertical"));
-        if(!mechanics.inControl)
-            return;
-
+        //if(!mechanics.inControl)
+        //    return;
         GroundedCheck();
         if (mechanics.isRopeClimbing)
             return;
+
         if (Input.GetKeyDown(KeyCode.Space))
         {
             Jump();
@@ -111,10 +111,13 @@ public class NewRootMotionController : MonoBehaviour
     //}
     private void FixedUpdate()
     {
+        if (mechanics.isRopeClimbing)
+            return;
+
         if (isJumping)
         {
             velocity.y -= gravity * Time.fixedDeltaTime;
-            Vector3 displacement=velocity*Time.fixedDeltaTime;
+            Vector3 displacement = velocity * Time.fixedDeltaTime;
             displacement += CalculateAirContoll();
             _characterController.Move(displacement);
             //isJumping = !_characterController.isGrounded;
@@ -124,17 +127,19 @@ public class NewRootMotionController : MonoBehaviour
         }
         else
         {
-            if (mechanics.isRopeClimbing || mechanics.canClimbEdge)
-                return;
+            ////if (mechanics.isRopeClimbing || mechanics.canClimbEdge)
+            ////    return;
+            //if (mechanics.withinRopeRadius || mechanics.isRopeClimbing)
+            //    return;
 
-            _characterController.Move(rootMotion + Vector3.down * stepDown);
-            rootMotion = Vector3.zero;
-            if (!_characterController.isGrounded)
-            {
-                isJumping = true;
-                velocity = _animator.velocity * jumpDamp;
-                velocity.y = 0;
-            }
+            //_characterController.Move(rootMotion + Vector3.down * stepDown);
+            //rootMotion = Vector3.zero;
+            //if (!_characterController.isGrounded)
+            //{
+            //    isJumping = true;
+            //    velocity = _animator.velocity * jumpDamp;
+            //    velocity.y = 0;
+            //}
         }
 
     }
@@ -143,7 +148,7 @@ public class NewRootMotionController : MonoBehaviour
     {
         if (mechanics.isRopeClimbing)
             return;
-        if(mechanics.isCrouched)
+        if (mechanics.isCrouched)
             return;
         if (mechanics.canClimbEdge)
             return;
@@ -188,8 +193,6 @@ public class NewRootMotionController : MonoBehaviour
         if (_animator)
         {
             _animator.SetBool("IsGrounded", Grounded);
-            //if(mechanics.isRopeClimbing)
-            //    return; 
             _animator.SetBool("FreeFall", !Grounded);
         }
     }

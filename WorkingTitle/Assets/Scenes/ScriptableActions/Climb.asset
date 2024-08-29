@@ -14,12 +14,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   animName: Climb
   obstacleTag: 
-  minHeight: 1
-  maxHeight: 5.5
-  postActionDelay: 0
-  rotateToObstacle: 0
+  minHeight: 0.3
+  maxHeight: 0.6
+  postActionDelay: 1
+  rotateToObstacle: 1
   enableTargetMatching: 1
   avatarTarget: 2
-  matchStartTym: 0.33
-  matchTargetTym: 0.55
+  matchStartTym: 0.28
+  matchTargetTym: 0.45
   matchposWeight: {x: 0, y: 1, z: 0}

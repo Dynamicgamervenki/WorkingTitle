@@ -22,7 +22,7 @@ public class ParkourController : MonoBehaviour
 
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Space))
+        if (Input.GetKeyDown(KeyCode.E))
         {
             ObstacleHitData obstacleHitData = environmentScanner.ObstacleCheck();
             if (obstacleHitData.forwordHitFound)
@@ -81,6 +81,7 @@ public class ParkourController : MonoBehaviour
 
         playerController.OnControl(true);
         inAction = false;
+        anim.SetBool("isRopeClimbing", false);
     }
 
     private void TargetMatching(ParkourAction action)
