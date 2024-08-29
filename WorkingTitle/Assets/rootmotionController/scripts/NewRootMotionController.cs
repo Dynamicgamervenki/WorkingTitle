@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class NewRootMotionController : MonoBehaviour
 {
@@ -27,9 +28,11 @@ public class NewRootMotionController : MonoBehaviour
 
     [Tooltip("Useful for rough ground")]
     public float GroundedOffset = -0.14f;
+    public float DetectOffset = -0.14f;
 
     [Tooltip("The radius of the grounded check. Should match the radius of the CharacterController")]
     public float GroundedRadius = 0.28f;
+    [SerializeField] float detectRadius;
 
     [Tooltip("What layers the character uses as ground")]
     public LayerMask GroundLayers;
@@ -42,42 +45,39 @@ public class NewRootMotionController : MonoBehaviour
     Vector3 rootMotion;
 
     Mechanics mechanics;
-
-
+    [SerializeField] float climbSpeed = 3f;
+    [SerializeField] bool ropeClimb;
+    RootInputs rootInputs;
+    
+    private void Awake()
+    {
+        rootInputs=new RootInputs();
+        rootInputs.Enable();
+    }
     private void Start()
     {
         _animator = GetComponent<Animator>();
         _characterController = GetComponent<CharacterController>();
         parkourController = FindObjectOfType<ParkourController>();
         Cursor.lockState = CursorLockMode.Locked;
-        
         mechanics = GetComponent<Mechanics>();
+
+        //input events
+        rootInputs.KeyBoard.Jump.started += Jump;
+        rootInputs.KeyBoard.Interact.started += Detect;
     }
-    bool canDoubleJump;
     private void Update()
     {
 
-        movement = new Vector3(Input.GetAxis("Horizontal"), 0f, Input.GetAxis("Vertical"));
-        if(!mechanics.inControl)
-            return;
-
+        movement = new Vector3(rootInputs.KeyBoard.Move.ReadValue<Vector2>().x, 0f, (rootInputs.KeyBoard.Move.ReadValue<Vector2>().y));
         GroundedCheck();
-        if (mechanics.isRopeClimbing)
-            return;
-        if (Input.GetKeyDown(KeyCode.Space))
-        {
-            Jump();
-        }
-        moveAmount = Mathf.Clamp01(Mathf.Abs(movement.x) + Mathf.Abs(movement.z));
         Locomotion();
         
 
     }
     void Locomotion()
     {
-        if(mechanics.isRopeClimbing)
-            return;
-
+        moveAmount = Mathf.Clamp01(Mathf.Abs(movement.x) + Mathf.Abs(movement.z));
         _runValue = (Input.GetKey(KeyCode.LeftShift)) ? 5f : 1f;
         _animator.SetFloat("Locomotion", moveAmount * _runValue, damValue, Time.deltaTime);
         
@@ -109,44 +109,43 @@ public class NewRootMotionController : MonoBehaviour
     {
         rootMotion += _animator.deltaPosition;
     }
+    [SerializeField] bool applyCustomRootmotion;
     private void FixedUpdate()
     {
-        if (isJumping)
+        if (!applyCustomRootmotion)
         {
-            velocity.y -= gravity * Time.fixedDeltaTime;
-            Vector3 displacement=velocity*Time.fixedDeltaTime;
-            displacement += CalculateAirContoll();
-            _characterController.Move(displacement);
-            //isJumping = !_characterController.isGrounded;
-            isJumping = !_characterController.isGrounded;
-            rootMotion = Vector3.zero;
-            canDoubleJump = true;
+            if (isJumping)
+            {
+                velocity.y -= gravity * Time.fixedDeltaTime;
+                Vector3 displacement = velocity * Time.fixedDeltaTime;
+                displacement += CalculateAirContoll();
+                _characterController.Move(displacement);
+                isJumping = !_characterController.isGrounded;
+                rootMotion = Vector3.zero;
+            }
+            else
+            {
+
+                _characterController.Move(rootMotion + Vector3.down * stepDown);
+                rootMotion = Vector3.zero;
+                if (!_characterController.isGrounded)
+                {
+                    isJumping = true;
+                    velocity = _animator.velocity * jumpDamp;
+                    velocity.y = 0;
+                }
+            }
         }
         else
         {
-            if (mechanics.isRopeClimbing || mechanics.canClimbEdge)
-                return;
-
-            _characterController.Move(rootMotion + Vector3.down * stepDown);
-            rootMotion = Vector3.zero;
-            if (!_characterController.isGrounded)
-            {
-                isJumping = true;
-                velocity = _animator.velocity * jumpDamp;
-                velocity.y = 0;
-            }
+            CustomRootMotion();
         }
+        
 
     }
     int jumpCount;
-    void Jump()
+    void Jump(InputAction.CallbackContext callbackContext)
     {
-        if (mechanics.isRopeClimbing)
-            return;
-        if(mechanics.isCrouched)
-            return;
-        if (mechanics.canClimbEdge)
-            return;
 
         if (_characterController.isGrounded)
         {
@@ -158,7 +157,7 @@ public class NewRootMotionController : MonoBehaviour
         }
         else
         {
-            if (jumpCount > 1)
+            if (jumpCount == 1)
             {
                 _animator.SetTrigger("DoubleJump");
                 isJumping = true;
@@ -168,33 +167,64 @@ public class NewRootMotionController : MonoBehaviour
             }
         }
     }
+    void CustomRootMotion()
+    {
+        if(ropeClimb)
+        {
+            HandleRopeClimb();
+        }
+        _characterController.Move(rootMotion);
+        rootMotion = Vector3.zero;
+    }
+    private void HandleRopeClimb()
+    {
+        _animator.SetBool("isRopeClimbing",ropeClimb);
+        _animator.SetFloat("moveY", Input.GetAxis("Vertical"));
+    }
     Vector3 CalculateAirContoll()
     {
         return ((Vector3.forward * movement.z) + (Vector3.right * movement.x)) * (airControl/100);
-        //return ((Vector3.forward * movement.z)) * (airControl/100);
-        //return ((transform.InverseTransformPoint(transform.forward) * movement.z) + (transform.InverseTransformPoint(transform.right) * movement.x)) * (airControl / 100);
     }
    
    
     private void GroundedCheck()
     {
         // set sphere position, with offset
-        Vector3 spherePosition = new Vector3(transform.position.x, transform.position.y - GroundedOffset,
-            transform.position.z);
-        Grounded = Physics.CheckSphere(spherePosition, GroundedRadius, GroundLayers,
-            QueryTriggerInteraction.Ignore);
+        //Vector3 spherePosition = new Vector3(transform.position.x, transform.position.y - GroundedOffset,
+        //    transform.position.z);
+        //Grounded = Physics.CheckSphere(spherePosition, GroundedRadius, GroundLayers,
+        //    QueryTriggerInteraction.Ignore);
         // StopCoroutine(nameof(Jump));
         // update animator if using character
         if (_animator)
         {
-            _animator.SetBool("IsGrounded", Grounded);
+            _animator.SetBool("IsGrounded", _characterController.isGrounded);
             //if(mechanics.isRopeClimbing)
             //    return; 
-            _animator.SetBool("FreeFall", !Grounded);
+            _animator.SetBool("FreeFall", !_characterController.isGrounded);
         }
     }
     
-
+    void Detect(InputAction.CallbackContext callbackContext)
+    {
+        Debug.Log("interact");
+        Vector3 spherePosition = new Vector3(transform.position.x, transform.position.y - DetectOffset,
+            transform.position.z);
+        Collider[] hitColliders = Physics.OverlapSphere(spherePosition, detectRadius);
+        foreach (var hit in hitColliders)
+        {
+            switch (hit.transform.tag)
+            {
+                case "Rope":
+                    ropeClimb = true;
+                    Debug.Log(hit.transform.gameObject.name);
+                    break;
+                default:
+                    break;
+            }
+        }
+    }
+  
 
     
     public void PlayerBalance()
@@ -216,12 +246,18 @@ public class NewRootMotionController : MonoBehaviour
         //else Gizmos.color = transparentRed;
 
         //// when selected, draw a gizmo in the position of, and matching radius of, the grounded collider
-        //Gizmos.DrawSphere(
-        //    new Vector3(transform.position.x, transform.position.y - GroundedOffset, transform.position.z),
-        //    GroundedRadius);
+        Gizmos.DrawSphere(
+            new Vector3(transform.position.x, transform.position.y - DetectOffset, transform.position.z),
+            detectRadius);
     }
     public Animator playerAnimator()
     {
         return _animator;
+    }
+    private void OnDisable()
+    {
+        rootInputs.KeyBoard.Jump.started -= Jump;
+        rootInputs.KeyBoard.Interact.started -= Detect;
+        rootInputs.Disable();
     }
 }
