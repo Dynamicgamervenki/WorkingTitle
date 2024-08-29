@@ -203,7 +203,7 @@ AnimatorStateMachine:
     m_Position: {x: 300, y: 110, z: 0}
   - serializedVersion: 1
     m_State: {fileID: -493935749163375879}
-    m_Position: {x: -60, y: 280, z: 0}
+    m_Position: {x: 120, y: 270, z: 0}
   - serializedVersion: 1
     m_State: {fileID: 3103683020979191336}
     m_Position: {x: -60, y: 160, z: 0}
@@ -1192,7 +1192,7 @@ AnimatorState:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: Falling From Losing Balance
-  m_Speed: 0.5
+  m_Speed: 1
   m_CycleOffset: 0
   m_Transitions: []
   m_StateMachineBehaviours: []

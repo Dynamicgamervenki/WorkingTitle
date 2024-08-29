@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Security.Cryptography;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Animations.Rigging;
@@ -49,11 +50,11 @@ public class Mechanics : MonoBehaviour
 
             Vector3 climbMovement = new Vector3(0, verticalInput * climbSpeed * Time.deltaTime, 0);
 
-            //if (canClimbEdge/* && verticalInput > 0f*/)
-            //{
-            //    climbMovement = Vector3.zero;
-            //}
-          //  characterController.Move(climbMovement);
+            if (canClimbEdge/* && verticalInput > 0f*/)
+            {
+                motionController.isJumping = false;
+            }
+            //  characterController.Move(climbMovement);
 
 
             if (verticalInput > 0f)
@@ -125,6 +126,7 @@ public class Mechanics : MonoBehaviour
     }
 
     bool hasExectuted = false;
+
     private void RopeClimbing()
     {
         withinRopeRadius = Physics.SphereCast(transform.position + Vector3.up * yOffset, ropeDetectionRadius, transform.forward, out RaycastHit hit, maxDistance, ropeMask);
@@ -137,8 +139,8 @@ public class Mechanics : MonoBehaviour
             characterController.enabled = false;
             transform.position = hit.point;
             characterController.enabled = true;
-            if(!hasExectuted)
-            this.transform.SetParent(hit.transform);
+            if (!hasExectuted)
+                this.transform.SetParent(hit.transform);
             hit.transform.Rotate(0f, 180f, 0f);
             this.transform.SetParent(null);
             hasExectuted = true;
@@ -151,7 +153,7 @@ public class Mechanics : MonoBehaviour
 
 
     public bool isCrouched = false;
-
+    public GameObject crouchObj;
     private void Crouch()
     {
         if (motionController.Grounded && Input.GetKeyDown(KeyCode.C))
@@ -163,11 +165,13 @@ public class Mechanics : MonoBehaviour
         {
             Debug.Log("Crouched");
             anim.SetBool("isCrouched", true);
+            crouchObj.gameObject.GetComponent<BoxCollider>().isTrigger = true;
         }
         if(!isCrouched)
         {
             Debug.Log("stand up");
             anim.SetBool("isCrouched", false);
+            crouchObj.gameObject.GetComponent<BoxCollider>().isTrigger = false;
         }
     }
 

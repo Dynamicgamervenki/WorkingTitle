@@ -127,19 +127,19 @@ public class NewRootMotionController : MonoBehaviour
         }
         else
         {
-            ////if (mechanics.isRopeClimbing || mechanics.canClimbEdge)
-            ////    return;
-            //if (mechanics.withinRopeRadius || mechanics.isRopeClimbing)
+            //if (mechanics.isRopeClimbing || mechanics.canClimbEdge)
             //    return;
+            if (mechanics.withinRopeRadius || mechanics.isRopeClimbing)
+                return;
 
-            //_characterController.Move(rootMotion + Vector3.down * stepDown);
-            //rootMotion = Vector3.zero;
-            //if (!_characterController.isGrounded)
-            //{
-            //    isJumping = true;
-            //    velocity = _animator.velocity * jumpDamp;
-            //    velocity.y = 0;
-            //}
+            _characterController.Move(rootMotion + Vector3.down * stepDown);
+            rootMotion = Vector3.zero;
+            if (!_characterController.isGrounded)
+            {
+                isJumping = true;
+                velocity = _animator.velocity * jumpDamp;
+                velocity.y = 0;
+            }
         }
 
     }
@@ -161,17 +161,17 @@ public class NewRootMotionController : MonoBehaviour
             velocity = _animator.velocity * jumpDamp;
             velocity.y = Mathf.Sqrt(2 * gravity * jumpHeight);
         }
-        else
-        {
-            if (jumpCount > 1)
-            {
-                _animator.SetTrigger("DoubleJump");
-                isJumping = true;
-                velocity = _animator.velocity * jumpDamp;
-                velocity.y = Mathf.Sqrt(2 * gravity * jumpHeight);
-                jumpCount = 0;
-            }
-        }
+        //else
+        //{
+        //    if (jumpCount > 1)
+        //    {
+        //        _animator.SetTrigger("DoubleJump");
+        //        isJumping = true;
+        //        velocity = _animator.velocity * jumpDamp;
+        //        velocity.y = Mathf.Sqrt(2 * gravity * jumpHeight);
+        //        jumpCount = 0;
+        //    }
+        //}
     }
     Vector3 CalculateAirContoll()
     {
