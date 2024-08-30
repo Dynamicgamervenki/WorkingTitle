@@ -17,6 +17,7 @@ public class PlayerManager : MonoBehaviour
     public CustomBoxDetection AttackDetect;
     public RootMotionController RootMotionControllerInstance;
     public NewRootMotionController NewRootMotionControllerInstance;
+    public PlayerHealth PlayerHealth;
     private void Awake()
     {
         if(Instance == null)
