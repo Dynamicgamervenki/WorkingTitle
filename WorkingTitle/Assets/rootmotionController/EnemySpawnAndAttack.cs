@@ -45,7 +45,7 @@ public class EnemySpawnAndAttack : MonoBehaviour
     private void Attack()
     {
         animator.SetBool("Walk", false);
-        animator.SetTrigger("Jump");
+        animator.SetFloat("Attack", 1.0f);
     }
 
     private float DistanceBtwPlayerAndEnemie()

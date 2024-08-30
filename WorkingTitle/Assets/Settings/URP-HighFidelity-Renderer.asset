@@ -53,8 +53,7 @@ MonoBehaviour:
     hdrDebugViewPS: {fileID: 4800000, guid: 573620ae32aec764abd4d728906d2587, type: 3}
   m_RendererFeatures:
   - {fileID: -1878332245247344467}
-  - {fileID: 3192570869676812336}
-  m_RendererFeatureMap: adc0de57c6d2eee530a8587f4a4a4e2c
+  m_RendererFeatureMap: adc0de57c6d2eee5
   m_UseNativeRenderPass: 0
   postProcessData: {fileID: 11400000, guid: 41439944d30ece34e96484bdb6645b55, type: 2}
   xrSystemData: {fileID: 11400000, guid: 60e1133243b97e347b653163a8c01b64, type: 2}
@@ -109,7 +108,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fcd0b5003bb4c6a4f94ec613f36a6e65, type: 3}
   m_Name: ScreenSpaceOutlines
   m_EditorClassIdentifier: 
-  m_Active: 1
+  m_Active: 0
   renderPassEvent: 300
   outlinesLayerMask:
     serializedVersion: 2
@@ -117,8 +116,8 @@ MonoBehaviour:
   outlineSettings:
     outlineColor: {r: 0, g: 0, b: 0, a: 1}
     outlineScale: 1
-    depthThreshold: 1.5
-    robertsCrossMultiplier: 100
+    depthThreshold: 100
+    robertsCrossMultiplier: 38
     normalThreshold: 0.4
     steepAngleThreshold: 0.2
     steepAngleMultiplier: 25
