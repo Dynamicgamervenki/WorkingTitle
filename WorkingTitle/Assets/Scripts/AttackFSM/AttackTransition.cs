@@ -8,7 +8,6 @@ public class AttackTransition : StateMachineBehaviour
     override public void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
         animator.SetInteger("ComboValue", 0);
-        animator.applyRootMotion = false;
     }
     [SerializeField] int _comboCount;
     // OnStateUpdate is called on each Update frame between OnStateEnter and OnStateExit callbacks

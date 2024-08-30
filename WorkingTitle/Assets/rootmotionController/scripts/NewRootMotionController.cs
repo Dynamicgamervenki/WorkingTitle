@@ -223,4 +223,8 @@ public class NewRootMotionController : MonoBehaviour
         //    new Vector3(transform.position.x, transform.position.y - GroundedOffset, transform.position.z),
         //    GroundedRadius);
     }
+    public Animator playerAnimator()
+    {
+        return _animator;
+    }
 }
