@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: cd2aa62a73c6c8f4b875244f422558ac
+guid: d71706bc1a4c98b4f97c17062f3343b1
 ModelImporter:
   serializedVersion: 22200
   internalIDToNameTable: []
@@ -33,28 +33,28 @@ ModelImporter:
     extraUserProperties: []
     clipAnimations:
     - serializedVersion: 16
-      name: Walk Crouching Forward
+      name: Running
       takeName: mixamo.com
       internalID: -203655887218126122
       firstFrame: 0
-      lastFrame: 60
+      lastFrame: 152
       wrapMode: 0
-      orientationOffsetY: 0
+      orientationOffsetY: -21.1
       level: 0
       cycleOffset: 0
       loop: 0
       hasAdditiveReferencePose: 0
-      loopTime: 1
-      loopBlend: 1
+      loopTime: 0
+      loopBlend: 0
       loopBlendOrientation: 1
       loopBlendPositionY: 1
       loopBlendPositionXZ: 0
-      keepOriginalOrientation: 1
+      keepOriginalOrientation: 0
       keepOriginalPositionY: 0
       keepOriginalPositionXZ: 0
       heightFromFeet: 1
-      mirror: 0
-      bodyMask: 01000000010000000100000001000000010000000000000000000000010000000100000001000000010000000100000001000000
+      mirror: 1
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
       curves: []
       events: []
       transformMask: []

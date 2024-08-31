@@ -31,6 +31,11 @@ public class Mechanics : MonoBehaviour
     public Transform shell;
     public bool waitFor2Sec = false;
 
+    [Header("Cinemachine")]
+    public Cinemachine.CinemachineVirtualCamera virtualCamera01;
+    public Cinemachine.CinemachineVirtualCamera spiderVirtualCamera;
+    public Cinemachine.CinemachineVirtualCamera sideVirtualCamera;
+
 
     private void Awake()
     {
@@ -43,6 +48,12 @@ public class Mechanics : MonoBehaviour
 
     private void Update()
     {
+        if(inCutscene)
+        {
+            gameObject.GetComponent<RootMotionController>().gameObject.SetActive(false);
+
+        }
+
         Crouch();
         if (isRopeClimbing)
         {
@@ -140,13 +151,11 @@ public class Mechanics : MonoBehaviour
             transform.position = hit.point;
             characterController.enabled = true;
             if (!hasExectuted)
-                this.transform.SetParent(hit.transform);
+            this.transform.SetParent(hit.transform);
             hit.transform.Rotate(0f, 180f, 0f);
             this.transform.SetParent(null);
             hasExectuted = true;
         }
-
-
     }
 
 
@@ -160,7 +169,6 @@ public class Mechanics : MonoBehaviour
         {
             isCrouched = !isCrouched;
         }
-
         if(isCrouched)
         {
             Debug.Log("Crouched");
@@ -175,7 +183,28 @@ public class Mechanics : MonoBehaviour
         }
     }
 
+    public GameObject spider;
+    public bool inCutscene;
+    public GameObject spiderEncounterCutScene;
+    public void CameraZoomIn()
+    {
+        virtualCamera01.Priority = 11;
+    }
 
+    public void SpiderZoomIn()
+    {
+        spiderVirtualCamera.Priority = 12;
+        spider.gameObject.SetActive(true);
+    }
+
+    public void TriggerSpiderCutscene()
+    {
+        inCutscene = true;
+        virtualCamera01.Priority = 9;
+        spiderVirtualCamera.Priority = 9;
+        sideVirtualCamera.Priority = 13;
+        spiderEncounterCutScene.SetActive(true);    
+    }
 
     private void OnDrawGizmosSelected()
     {
