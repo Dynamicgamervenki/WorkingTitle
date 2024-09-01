@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 0654ef2f1a2d9434b949ec4b87118347
+guid: 8e70982dc6776674fab351c384f2fefe
 ModelImporter:
   serializedVersion: 22200
   internalIDToNameTable:
@@ -49,8 +49,8 @@ ModelImporter:
       name: Traversal_Slide_45Degree_Slope_Sitting_End
       takeName: Take 001
       internalID: 0
-      firstFrame: 50
-      lastFrame: 105
+      firstFrame: 58
+      lastFrame: 65
       wrapMode: 0
       orientationOffsetY: 0
       level: 0

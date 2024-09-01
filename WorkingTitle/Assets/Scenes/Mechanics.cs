@@ -4,6 +4,8 @@ using System.Security.Cryptography;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Animations.Rigging;
+using UnityEngine.Playables;
+using UnityEngine.Timeline;
 
 public class Mechanics : MonoBehaviour
 {
@@ -186,6 +188,9 @@ public class Mechanics : MonoBehaviour
     public GameObject spider;
     public bool inCutscene;
     public GameObject spiderEncounterCutScene;
+    public GameObject JumpCutScene;
+    public PlayableDirector playableDirector;
+    public TimelineAsset timeline;
     public void CameraZoomIn()
     {
         virtualCamera01.Priority = 11;
@@ -203,8 +208,11 @@ public class Mechanics : MonoBehaviour
         virtualCamera01.Priority = 9;
         spiderVirtualCamera.Priority = 9;
         sideVirtualCamera.Priority = 13;
-        spiderEncounterCutScene.SetActive(true);    
+        spiderEncounterCutScene.SetActive(true);
+        //StartCoroutine(Unmute());
     }
+
+
 
     private void OnDrawGizmosSelected()
     {
