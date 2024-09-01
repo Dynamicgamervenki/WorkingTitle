@@ -6697,6 +6697,11 @@ PrefabInstance:
       propertyPath: crouchObj
       value: 
       objectReference: {fileID: 594377988}
+    - target: {fileID: 4859088329490035131, guid: 667479de69836d842865c975b787be9e,
+        type: 3}
+      propertyPath: m_StabilizeFeet
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 6236871784266685386, guid: 667479de69836d842865c975b787be9e,
         type: 3}
       propertyPath: m_Name
