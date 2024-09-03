@@ -191,6 +191,7 @@ public class Mechanics : MonoBehaviour
     public GameObject JumpCutScene;
     public PlayableDirector playableDirector;
     public TimelineAsset timeline;
+    public GameObject bossIntroPos;
     public void CameraZoomIn()
     {
         virtualCamera01.Priority = 11;
@@ -200,6 +201,7 @@ public class Mechanics : MonoBehaviour
     {
         spiderVirtualCamera.Priority = 12;
         spider.gameObject.SetActive(true);
+        transform.SetParent(bossIntroPos.transform);
     }
 
     public void TriggerSpiderCutscene()
@@ -208,7 +210,8 @@ public class Mechanics : MonoBehaviour
         virtualCamera01.Priority = 9;
         spiderVirtualCamera.Priority = 9;
         sideVirtualCamera.Priority = 13;
-        spiderEncounterCutScene.SetActive(true);
+        playableDirector.Play();
+        //spiderEncounterCutScene.SetActive(true);
         //StartCoroutine(Unmute());
     }
 

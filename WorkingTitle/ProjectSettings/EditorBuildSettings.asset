@@ -6,11 +6,14 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
-    path: Assets/Ui/MainMenu.unity
-    guid: ba068d4408313dc48b222b317434fcc2
+    path: Assets/Ui/StartUp.unity
+    guid: 5a21e9b7238b57244801b2bab078cff7
   - enabled: 1
-    path: Assets/rootmotionController/scenes/V.unity
-    guid: 5456f8739b8596a4fb0dba378cb4ae4d
+    path: Assets/rootmotionController/scenes/IntroCutScene.unity
+    guid: b4f2effe0efd6a44d9be27a9cf7eba5e
+  - enabled: 1
+    path: Assets/rootmotionController/scenes/V 2.unity
+    guid: a49261aa6e47e934190a0edbec2bc58a
   m_configObjects:
     com.unity.input.settings: {fileID: 11400000, guid: 9e7be553448fa2546aea5752021cbcf7,
       type: 2}

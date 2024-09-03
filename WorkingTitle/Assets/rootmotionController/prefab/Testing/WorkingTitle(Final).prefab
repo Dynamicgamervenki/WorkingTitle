@@ -3114,9 +3114,18 @@ MonoBehaviour:
     m_Bits: 1024
   shell: {fileID: 0}
   waitFor2Sec: 0
+  virtualCamera01: {fileID: 0}
+  spiderVirtualCamera: {fileID: 0}
+  sideVirtualCamera: {fileID: 0}
   canClimbEdge: 0
   isCrouched: 0
   crouchObj: {fileID: 0}
+  spider: {fileID: 0}
+  inCutscene: 0
+  spiderEncounterCutScene: {fileID: 0}
+  JumpCutScene: {fileID: 0}
+  playableDirector: {fileID: 0}
+  timeline: {fileID: 0}
 --- !u!114 &964512934321840541
 MonoBehaviour:
   m_ObjectHideFlags: 0
