@@ -9,9 +9,9 @@ using UnityEngine.Timeline;
 
 public class Mechanics : MonoBehaviour
 {
-    [HideInInspector]public Animator anim;
+    [HideInInspector] public Animator anim;
     NewRootMotionController motionController;
-   public  CharacterController characterController;
+    public CharacterController characterController;
 
     public float rotationSpeed;
     Quaternion targetRotation;
@@ -50,7 +50,7 @@ public class Mechanics : MonoBehaviour
 
     private void Update()
     {
-        if(inCutscene)
+        if (inCutscene)
         {
             gameObject.GetComponent<RootMotionController>().gameObject.SetActive(false);
 
@@ -63,29 +63,23 @@ public class Mechanics : MonoBehaviour
 
             Vector3 climbMovement = new Vector3(0, verticalInput * climbSpeed * Time.deltaTime, 0);
 
-            if (canClimbEdge/* && verticalInput > 0f*/)
+            if (canClimbEdge)
             {
                 motionController.isJumping = false;
             }
-            //  characterController.Move(climbMovement);
-
 
             if (verticalInput > 0f)
             {
-                Debug.Log("Rope climbing up");
-                anim.SetFloat("moveY", 1.0f); // Climbing up
+                anim.SetFloat("moveY", 1.0f);
             }
             else if (verticalInput == 0.0f)
             {
-                Debug.Log("Rope climb idle");
-                anim.SetFloat("moveY", 0.0f); // Idle
+                anim.SetFloat("moveY", 0.0f);
             }
             else if (verticalInput < 0.0f)
             {
-                Debug.Log("Rope climbing down");
-                anim.SetFloat("moveY", 2.0f); // Climbing down
+                anim.SetFloat("moveY", 2.0f);
             }
-
 
         }
 
@@ -99,7 +93,7 @@ public class Mechanics : MonoBehaviour
 
     private void OnControllerColliderHit(ControllerColliderHit hit)
     {
-        if(hit.gameObject.CompareTag("Balance"))
+        if (hit.gameObject.CompareTag("Balance"))
         {
             Debug.Log("balance started");
             isBalanceWalking = true;
@@ -153,7 +147,7 @@ public class Mechanics : MonoBehaviour
             transform.position = hit.point;
             characterController.enabled = true;
             if (!hasExectuted)
-            this.transform.SetParent(hit.transform);
+                this.transform.SetParent(hit.transform);
             hit.transform.Rotate(0f, 180f, 0f);
             this.transform.SetParent(null);
             hasExectuted = true;
@@ -171,13 +165,13 @@ public class Mechanics : MonoBehaviour
         {
             isCrouched = !isCrouched;
         }
-        if(isCrouched)
+        if (isCrouched)
         {
             Debug.Log("Crouched");
             anim.SetBool("isCrouched", true);
             crouchObj.gameObject.GetComponent<BoxCollider>().isTrigger = true;
         }
-        if(!isCrouched)
+        if (!isCrouched)
         {
             Debug.Log("stand up");
             anim.SetBool("isCrouched", false);
@@ -185,10 +179,10 @@ public class Mechanics : MonoBehaviour
         }
     }
 
+
     public GameObject spider;
     public bool inCutscene;
     public GameObject spiderEncounterCutScene;
-    public GameObject JumpCutScene;
     public PlayableDirector playableDirector;
     public TimelineAsset timeline;
     public GameObject bossIntroPos;
@@ -201,7 +195,6 @@ public class Mechanics : MonoBehaviour
     {
         spiderVirtualCamera.Priority = 12;
         spider.gameObject.SetActive(true);
-        transform.SetParent(bossIntroPos.transform);
     }
 
     public void TriggerSpiderCutscene()
@@ -211,9 +204,14 @@ public class Mechanics : MonoBehaviour
         spiderVirtualCamera.Priority = 9;
         sideVirtualCamera.Priority = 13;
         playableDirector.Play();
-        //spiderEncounterCutScene.SetActive(true);
-        //StartCoroutine(Unmute());
     }
+
+    public void UnparentPlayer()
+    {
+        transform.SetParent(null);
+    }
+
+
 
 
 
@@ -223,27 +221,6 @@ public class Mechanics : MonoBehaviour
         Gizmos.color = Color.black;
         Gizmos.DrawWireSphere(transform.position + Vector3.up * yOffset + transform.forward * maxDistance, ropeDetectionRadius);
 
-
-        //Vector3 origin = transform.position + Vector3.up * yOffset;
-        //Vector3 direction = transform.forward;
-
-        //// Perform the SphereCast
-        //bool withinRopeRadius = Physics.SphereCast(origin, ropeDetectionRadius, direction, out RaycastHit hit, maxDistance, ropeMask);
-
-        //// Draw the sphere at the origin of the SphereCast
-        //Gizmos.color = Color.blue;
-        //Gizmos.DrawWireSphere(origin, ropeDetectionRadius);
-
-        //// Draw a line in the direction of the SphereCast
-        //Gizmos.color = Color.green;
-        //Gizmos.DrawLine(origin, origin + direction * maxDistance);
-
-        //// If a hit is detected, draw the hit point
-        //if (withinRopeRadius)
-        //{
-        //    Gizmos.color = Color.red;
-        //    Gizmos.DrawWireSphere(hit.point, ropeDetectionRadius);
-        //}
 
     }
 

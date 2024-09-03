@@ -33,7 +33,7 @@ public class IntroCutsceneManager : MonoBehaviour
 
         videoPlayers = Tv.GetComponents<VideoPlayer>();
 
-        // Access the video players individually
+        
         if (videoPlayers.Length > 1)
         {
             gameplay = videoPlayers[0];
@@ -76,7 +76,7 @@ public class IntroCutsceneManager : MonoBehaviour
             if(playableDirector.time >= 33f)
             {
                 roomLight.gameObject.SetActive(false);
-                redLight.gameObject.SetActive(true); // Red light starts on when room light is off
+                redLight.gameObject.SetActive(true);
 
                 int toggleCount = 10;
                 float delay = 0.1f;
@@ -85,25 +85,18 @@ public class IntroCutsceneManager : MonoBehaviour
                 {
                     yield return new WaitForSeconds(delay);
 
-                    // Toggle room light and red light alternatively
+                    
                     bool isRoomLightActive = roomLight.gameObject.activeSelf;
                     roomLight.gameObject.SetActive(!isRoomLightActive);
                     redLight.gameObject.SetActive(isRoomLightActive);
                 }
                 smokeEffect.gameObject.transform.localScale = new Vector3 (5f, 5f, 5f);
-                // Ensure the room light ends in the correct state (off) and red light on
+
                 roomLight.gameObject.SetActive(false);
                 redLight.gameObject.SetActive(false);
                 friend.gameObject.SetActive(false);
             }
-            //if(playableDirector.time >= 35.0f)
-            //{
-            //    roomLight.gameObject.SetActive(false);
-            //    redLight.gameObject.SetActive(false);
-
-
-            //}
-            yield return null; // Wait until the next frame
+            yield return null;
         }
     }
 }

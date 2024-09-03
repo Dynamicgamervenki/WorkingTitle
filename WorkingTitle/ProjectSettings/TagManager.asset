@@ -12,6 +12,7 @@ TagManager:
   - climb
   - Balance
   - cardboard
+  - push
   layers:
   - Default
   - TransparentFX

@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 445077c2e34ef474e81ba073641d05cf
+guid: 1620208ddf2e3004f8a3e5d1ccb0ee5b
 ModelImporter:
   serializedVersion: 22200
   internalIDToNameTable: []
@@ -33,11 +33,11 @@ ModelImporter:
     extraUserProperties: []
     clipAnimations:
     - serializedVersion: 16
-      name: Falling To Roll
+      name: Laying
       takeName: mixamo.com
       internalID: -203655887218126122
       firstFrame: 0
-      lastFrame: 128
+      lastFrame: 260
       wrapMode: 0
       orientationOffsetY: 0
       level: 0
