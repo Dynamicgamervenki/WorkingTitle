@@ -50,44 +50,38 @@ public class Mechanics : MonoBehaviour
 
     private void Update()
     {
-        if (inCutscene)
-        {
-            gameObject.GetComponent<RootMotionController>().gameObject.SetActive(false);
-
-        }
-
         Crouch();
+
         if (isRopeClimbing)
         {
             float verticalInput = Input.GetAxis("Vertical");
-
-            Vector3 climbMovement = new Vector3(0, verticalInput * climbSpeed * Time.deltaTime, 0);
+            Vector3 climbMovement = Vector3.up * verticalInput * climbSpeed * Time.deltaTime;
 
             if (canClimbEdge)
             {
                 motionController.isJumping = false;
             }
 
-            if (verticalInput > 0f)
-            {
-                anim.SetFloat("moveY", 1.0f);
-            }
-            else if (verticalInput == 0.0f)
-            {
-                anim.SetFloat("moveY", 0.0f);
-            }
-            else if (verticalInput < 0.0f)
-            {
-                anim.SetFloat("moveY", 2.0f);
-            }
-
+            float moveY = verticalInput > 0 ? 1.0f : verticalInput < 0 ? 2.0f : 0.0f;
+            anim.SetFloat("moveY", moveY);
         }
+
+        if (Input.GetKeyDown(KeyCode.E) && !weaponEquipped && needleWithinRadius)
+        {
+            Debug.Log("Weapon picked");
+            HandIkTarget.position = Needle.transform.position;
+            anim.SetTrigger("pickup");
+            weaponEquipped = true;
+        }
+
+
 
     }
 
     private void FixedUpdate()
     {
         RopeClimbing();
+        
     }
 
 
@@ -211,6 +205,40 @@ public class Mechanics : MonoBehaviour
         transform.SetParent(null);
     }
 
+    public bool needleWithinRadius = false;
+    public Transform HandIkTarget;
+    public Transform HandBone;
+    public GameObject Needle;
+
+    bool weaponEquipped = false;
+    public void NeedleIsWithinRadius()
+    {
+        needleWithinRadius = true;
+    }
+
+    public void NeedleNotWithInRadius()
+    {
+        needleWithinRadius = false;
+    }
+
+
+
+    private void GrabNeedle()
+    {
+        Needle.transform.SetParent(HandBone);
+    }
+
+    public void NeeleSetActiveFalse()
+    {
+        StartCoroutine(SetActiveFalses());
+    }
+
+    IEnumerator SetActiveFalses()
+    {
+        yield return new WaitForSeconds(1.0f);
+        Needle.SetActive(false);
+    }
+  
 
 
 
@@ -220,7 +248,8 @@ public class Mechanics : MonoBehaviour
 
         Gizmos.color = Color.black;
         Gizmos.DrawWireSphere(transform.position + Vector3.up * yOffset + transform.forward * maxDistance, ropeDetectionRadius);
-
+        Gizmos.color = Color.blue;
+        Gizmos.DrawWireSphere(transform.position, 0.5f);
 
     }
 

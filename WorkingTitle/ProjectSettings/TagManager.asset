@@ -13,6 +13,7 @@ TagManager:
   - Balance
   - cardboard
   - push
+  - Needle
   layers:
   - Default
   - TransparentFX
