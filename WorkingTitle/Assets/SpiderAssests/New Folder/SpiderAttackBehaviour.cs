@@ -9,7 +9,8 @@ public class SpiderAttackBehaviour : StateMachineBehaviour
     [SerializeField] float minTime=0.5f, maxTime=1f;
     [SerializeField] int attackCounter;
     [SerializeField] float attackDistance, detectStart, detectEnd;
-    [SerializeField] bool detect; 
+    [SerializeField] bool detect;
+    [SerializeField] float healthToDetect=15f;
     override public void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
         if(behaviour==null&& animator.TryGetComponent(out EnemyBehaviour enemy)) 
@@ -39,7 +40,7 @@ public class SpiderAttackBehaviour : StateMachineBehaviour
         if(stateInfo.normalizedTime>=detectStart && stateInfo.normalizedTime<=detectEnd && detect)
         {
             PlayerManager.Instance.NewRootMotionControllerInstance.playerAnimator().SetTrigger("PlayerHit");
-            PlayerManager.Instance.PlayerHealth.setHealth(15f);
+            PlayerManager.Instance.PlayerHealth.setHealth(healthToDetect);
             detect = false;
         }
 
