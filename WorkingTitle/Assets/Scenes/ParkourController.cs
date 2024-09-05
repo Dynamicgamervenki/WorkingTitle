@@ -40,7 +40,7 @@ public class ParkourController : MonoBehaviour
 
     }
 
-    IEnumerator DoParkourAction(ParkourAction action)
+    public IEnumerator DoParkourAction(ParkourAction action)
     {
         var name = action.animName;
 

@@ -31,6 +31,7 @@ public class resetClimbing : StateMachineBehaviour
         mechanics.characterController.center = new Vector3(0, 2.86999989f, -0.1f);
         mechanics.isRopeClimbing = false;
         mechanics.canClimbEdge = false; 
+        mechanics.isWallClimbing = false;
         mechanics.anim.SetBool("isRopeClimbing",false);
         
     }

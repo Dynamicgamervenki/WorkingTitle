@@ -50,20 +50,27 @@ public class Mechanics : MonoBehaviour
 
     private void Update()
     {
+        WallClimbing();
         Crouch();
 
-        if (isRopeClimbing)
+        if (isRopeClimbing || isWallClimbing)
         {
             float verticalInput = Input.GetAxis("Vertical");
-            Vector3 climbMovement = Vector3.up * verticalInput * climbSpeed * Time.deltaTime;
 
             if (canClimbEdge)
             {
                 motionController.isJumping = false;
             }
 
+            if(isWallClimbing && motionController.Grounded && verticalInput < 0)
+            {
+                isWallClimbing = false;
+                anim.Play("In Air");
+            }
+
             float moveY = verticalInput > 0 ? 1.0f : verticalInput < 0 ? 2.0f : 0.0f;
-            anim.SetFloat("moveY", moveY);
+            anim.SetFloat("moveY", moveY, 0.1f, Time.deltaTime); // 0.1f is the damp time
+
         }
 
         if (Input.GetKeyDown(KeyCode.E) && !weaponEquipped && needleWithinRadius)
@@ -161,13 +168,11 @@ public class Mechanics : MonoBehaviour
         }
         if (isCrouched)
         {
-            Debug.Log("Crouched");
             anim.SetBool("isCrouched", true);
             crouchObj.gameObject.GetComponent<BoxCollider>().isTrigger = true;
         }
         if (!isCrouched)
         {
-            Debug.Log("stand up");
             anim.SetBool("isCrouched", false);
             crouchObj.gameObject.GetComponent<BoxCollider>().isTrigger = false;
         }
@@ -238,8 +243,32 @@ public class Mechanics : MonoBehaviour
         yield return new WaitForSeconds(1.0f);
         Needle.SetActive(false);
     }
-  
 
+    public bool  isWallClimbing = false;
+    public LayerMask wallMask;
+    public ParkourAction climbUp;
+    public GameObject WallClimbLimit;
+    public void WallClimbing()
+    {
+        if(Physics.Raycast(transform.position + Vector3.up * 0.5f,transform.forward,out RaycastHit hit,0.15f,wallMask))
+        {
+            Debug.DrawRay(transform.position + Vector3.up * 0.5f, transform.forward * 0.15f);
+            if (Input.GetKey(KeyCode.Space))
+            {
+                WallClimbLimit.SetActive(true);
+                isWallClimbing = true;
+                anim.Play("WallClimbStart");
+            }
+        }
+
+        if(Input.GetKey(KeyCode.E) && isWallClimbing)
+        {
+            ParkourController pc = FindAnyObjectByType<ParkourController>();
+            StartCoroutine(pc.DoParkourAction(climbUp));
+            WallClimbLimit.gameObject.SetActive(false);
+        }
+
+    }
 
 
 

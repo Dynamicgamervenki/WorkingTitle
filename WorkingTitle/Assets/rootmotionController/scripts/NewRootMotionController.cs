@@ -61,7 +61,7 @@ public class NewRootMotionController : MonoBehaviour
         //if(!mechanics.inControl)
         //    return;
         GroundedCheck();
-        if (mechanics.isRopeClimbing)
+        if (mechanics.isRopeClimbing || mechanics.isWallClimbing)
             return;
 
         if (Input.GetKeyDown(KeyCode.Space))
@@ -111,7 +111,7 @@ public class NewRootMotionController : MonoBehaviour
     //}
     private void FixedUpdate()
     {
-        if (mechanics.isRopeClimbing)
+        if (mechanics.isRopeClimbing || mechanics.isWallClimbing)
             return;
 
         if (isJumping)
