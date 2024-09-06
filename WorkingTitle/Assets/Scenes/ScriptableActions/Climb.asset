@@ -15,7 +15,7 @@ MonoBehaviour:
   animName: Climb
   obstacleTag: 
   minHeight: 0.3
-  maxHeight: 2
+  maxHeight: 0.6
   postActionDelay: 1
   rotateToObstacle: 1
   enableTargetMatching: 1
