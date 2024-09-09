@@ -38,6 +38,8 @@ public class Mechanics : MonoBehaviour
     public Cinemachine.CinemachineVirtualCamera spiderVirtualCamera;
     public Cinemachine.CinemachineVirtualCamera sideVirtualCamera;
 
+    public GameObject Spider;
+
 
     private void Awake()
     {
@@ -188,6 +190,7 @@ public class Mechanics : MonoBehaviour
     public bool damned = false;
     public void CameraZoomIn()
     {
+        spider.SetActive(true);
         virtualCamera01.Priority = 11;
         damned = true;
         anim.Play("Walk");
