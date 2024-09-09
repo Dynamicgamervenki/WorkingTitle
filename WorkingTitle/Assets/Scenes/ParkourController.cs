@@ -40,7 +40,7 @@ public class ParkourController : MonoBehaviour
 
     }
 
-    public IEnumerator DoParkourAction(ParkourAction action)
+    IEnumerator DoParkourAction(ParkourAction action)
     {
         var name = action.animName;
 
@@ -84,6 +84,48 @@ public class ParkourController : MonoBehaviour
         anim.SetBool("isRopeClimbing", false);
     }
 
+    public IEnumerator DoClimbAction(ParkourAction action)
+    {
+        var name = action.animName;
+
+        inAction = true;
+
+        anim.SetBool("mirrorAction", action.Mirror);
+        playerController.OnControl(false);
+        anim.Play(name, 0);
+
+
+        var animState = anim.GetNextAnimatorStateInfo(0);
+        if (!animState.IsName(name))
+            Debug.LogError("The parkour animation name is wrong !");
+
+
+        float timer = 0f;
+        while (timer <= animState.length)
+        {
+            timer += Time.deltaTime;
+            if (action.rotateToObstacle)
+            {
+                transform.rotation = Quaternion.RotateTowards(transform.rotation, action.TargetRotation, playerController.rotationSpeed * Time.deltaTime);
+            }
+
+            if (action.enableTargetMatching)
+            {
+                TargetMatching(action);
+            }
+
+            if (anim.IsInTransition(0) && timer > 0.5f)
+                break;
+
+
+            yield return null;
+        }
+        yield return new WaitForSeconds(action.postActionDelay);
+
+        playerController.OnControl(true);
+        inAction = false;
+        anim.SetBool("isRopeClimbing", false);
+    }
     private void TargetMatching(ParkourAction action)
     {
         if (anim.isMatchingTarget)

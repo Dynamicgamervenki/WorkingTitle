@@ -264,7 +264,7 @@ public class Mechanics : MonoBehaviour
         if(Input.GetKey(KeyCode.E) && isWallClimbing)
         {
             ParkourController pc = FindAnyObjectByType<ParkourController>();
-            StartCoroutine(pc.DoParkourAction(climbUp));
+            StartCoroutine(pc.DoClimbAction(climbUp));
             WallClimbLimit.gameObject.SetActive(false);
         }
 

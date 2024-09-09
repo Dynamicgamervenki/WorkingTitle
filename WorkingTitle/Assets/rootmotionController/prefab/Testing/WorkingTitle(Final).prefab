@@ -2874,6 +2874,12 @@ MonoBehaviour:
   HandIkTarget: {fileID: 3034192512022092731}
   HandBone: {fileID: 1715418483578231440}
   Needle: {fileID: 0}
+  isWallClimbing: 0
+  wallMask:
+    serializedVersion: 2
+    m_Bits: 0
+  climbUp: {fileID: 0}
+  WallClimbLimit: {fileID: 0}
 --- !u!114 &964512934321840541
 MonoBehaviour:
   m_ObjectHideFlags: 0
