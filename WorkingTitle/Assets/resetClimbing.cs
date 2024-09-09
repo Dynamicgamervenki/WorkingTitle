@@ -14,7 +14,10 @@ public class resetClimbing : StateMachineBehaviour
     // OnStateEnter is called when a transition starts and the state machine starts to evaluate this state
     override public void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
-        mechanics.shell.transform.GetChild(0).gameObject.SetActive(false);
+        for(int i=0;i<mechanics.shell.Length;i++)
+        {
+        mechanics.shell[i].transform.GetChild(0).gameObject.SetActive(false);
+        }
        
     }
 

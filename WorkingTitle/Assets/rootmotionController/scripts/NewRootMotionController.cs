@@ -75,7 +75,7 @@ public class NewRootMotionController : MonoBehaviour
     }
     void Locomotion()
     {
-        if(mechanics.isRopeClimbing)
+        if(mechanics.isRopeClimbing || mechanics.damned)
             return;
 
         _runValue = (Input.GetKey(KeyCode.LeftShift)) ? 5f : 1f;

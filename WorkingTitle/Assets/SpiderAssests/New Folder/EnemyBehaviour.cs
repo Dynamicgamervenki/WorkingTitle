@@ -17,10 +17,6 @@ public class EnemyBehaviour : MonoBehaviour
     [SerializeField]public float TimeToAttack,TimeToJumpAttack;
     [HideInInspector] public float TimerCounter,JumpTimerCounter;
 
-    private void Awake()
-    {
-        gameObject.SetActive(false);
-    }
     private void OnEnable()
     {
         agent = GetComponent<NavMeshAgent>();

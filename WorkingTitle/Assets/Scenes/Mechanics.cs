@@ -30,7 +30,7 @@ public class Mechanics : MonoBehaviour
     public float maxDistance = 2.0f;
     public LayerMask ropeMask;
 
-    public Transform shell;
+    public Transform[] shell;
     public bool waitFor2Sec = false;
 
     [Header("Cinemachine")]
@@ -69,7 +69,7 @@ public class Mechanics : MonoBehaviour
             }
 
             float moveY = verticalInput > 0 ? 1.0f : verticalInput < 0 ? 2.0f : 0.0f;
-            anim.SetFloat("moveY", moveY, 0.1f, Time.deltaTime); // 0.1f is the damp time
+            anim.SetFloat("moveY", moveY, 0.1f, Time.deltaTime); 
 
         }
 
@@ -185,15 +185,19 @@ public class Mechanics : MonoBehaviour
     public PlayableDirector playableDirector;
     public TimelineAsset timeline;
     public GameObject bossIntroPos;
+    public bool damned = false;
     public void CameraZoomIn()
     {
         virtualCamera01.Priority = 11;
+        damned = true;
+        anim.Play("Walk");
     }
 
     public void SpiderZoomIn()
     {
-        spiderVirtualCamera.Priority = 12;
         spider.gameObject.SetActive(true);
+        spiderVirtualCamera.Priority = 12;
+        
     }
 
     public void TriggerSpiderCutscene()
@@ -203,11 +207,17 @@ public class Mechanics : MonoBehaviour
         spiderVirtualCamera.Priority = 9;
         sideVirtualCamera.Priority = 13;
         playableDirector.Play();
+
     }
 
     public void UnparentPlayer()
     {
         transform.SetParent(null);
+    }
+
+    public void Damn()
+    {
+        damned = false;
     }
 
     public bool needleWithinRadius = false;
