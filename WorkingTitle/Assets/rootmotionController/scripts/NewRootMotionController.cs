@@ -43,7 +43,7 @@ public class NewRootMotionController : MonoBehaviour
 
     Mechanics mechanics;
 
-
+    public Transform sword;
     private void Start()
     {
         _animator = GetComponent<Animator>();

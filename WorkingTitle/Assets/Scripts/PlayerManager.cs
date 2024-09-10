@@ -19,6 +19,7 @@ public class PlayerManager : MonoBehaviour
     public NewRootMotionController NewRootMotionControllerInstance;
     public PlayerHealth PlayerHealth;
     public ObjectiveTexts objectiveTexts;
+    public Mechanics mechanics;
     private void Awake()
     {
         if(Instance == null)

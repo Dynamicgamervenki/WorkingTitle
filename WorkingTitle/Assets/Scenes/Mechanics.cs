@@ -228,7 +228,7 @@ public class Mechanics : MonoBehaviour
     public Transform HandBone;
     public GameObject Needle;
 
-    bool weaponEquipped = false;
+    public bool weaponEquipped = false;
     public void NeedleIsWithinRadius()
     {
         needleWithinRadius = true;
