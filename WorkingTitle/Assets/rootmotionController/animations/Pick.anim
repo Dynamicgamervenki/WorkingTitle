@@ -65791,9 +65791,10 @@ AnimationClip:
   m_HasMotionFloatCurves: 0
   m_Events:
   - time: 1.3333334
-    functionName: 
+    functionName: PlayerTheText
     data: 
-    objectReferenceParameter: {fileID: 0}
+    objectReferenceParameter: {fileID: 6236871784266685386, guid: 667479de69836d842865c975b787be9e,
+      type: 3}
     floatParameter: 0
     intParameter: 0
     messageOptions: 0

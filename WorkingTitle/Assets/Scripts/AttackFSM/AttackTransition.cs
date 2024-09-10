@@ -14,7 +14,7 @@ public class AttackTransition : StateMachineBehaviour
     override public void OnStateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
         //if(PlayerManager.Instance._StarterAssetsInputsInstance.attack)
-        if(Input.GetKeyDown(KeyCode.Mouse0))
+        if(Input.GetKeyDown(KeyCode.Mouse0) && animator.GetLayerWeight(layerIndex)>0f)
         {
             animator.SetInteger("ComboValue", _comboCount);
         }
