@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Security.Cryptography;
@@ -5,7 +6,9 @@ using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Animations.Rigging;
 using UnityEngine.Playables;
+using UnityEngine.SceneManagement;
 using UnityEngine.Timeline;
+using UnityEngine.UI;
 
 public class Mechanics : MonoBehaviour
 {
@@ -48,12 +51,19 @@ public class Mechanics : MonoBehaviour
         motionController = FindObjectOfType<NewRootMotionController>();
 
         Cursor.lockState = CursorLockMode.Locked;
+
     }
 
     private void Update()
     {
+        if(SceneManager.GetActiveScene().buildIndex == 2)
+        {
+            TriggerFirstObjectiveForPlayer();
+        }
+
         WallClimbing();
         Crouch();
+
 
         if (isRopeClimbing || isWallClimbing)
         {
@@ -283,6 +293,46 @@ public class Mechanics : MonoBehaviour
 
     }
 
+
+    public GameObject firstObjectiveTxt;
+    public Cinemachine.CinemachineVirtualCamera firstObjectiveCam;
+    public Cinemachine.CinemachineBrain brain;
+
+    private void ObjectiveCam(bool active,int priority)
+    {
+        firstObjectiveCam.gameObject.SetActive(active);
+        firstObjectiveCam.Priority = priority;
+    }
+
+    IEnumerator WaitFor2Sec()
+    {
+        yield return new WaitForSeconds(3.0f);
+        ObjectiveCam(true,11);
+        yield return new WaitForSeconds(2.0f);
+        firstObjectiveTxt.SetActive(true);
+        yield return new WaitForSeconds(3.0f);
+        ObjectiveCam(false,9);
+        firstObjectiveTxt.SetActive(false);
+    }
+
+    bool objectiveTriggerd = false;
+    public void TriggerFirstObjectiveForPlayer()
+    {
+        float timer = 0;
+        if(!objectiveTriggerd)
+        {
+            timer += Time.time;
+            Debug.Log(timer);
+            if(timer >= 5f)
+            {
+                StartCoroutine(WaitFor2Sec());
+                objectiveTriggerd = true;
+        
+            }
+            
+        }
+        
+    }
 
 
     private void OnDrawGizmosSelected()
